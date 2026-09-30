@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS `website_data`.`Sessions` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+	`user_id` NOT NULL, 
+	`token` VARCHAR(255) NOT NULL,
+	`created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+	`last_active` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	`expires` TIMESTAMP NTO NULL,
+       	
+	PRIMARY KEY (`id`),
+	UNIQUE (`token`), 
+	UNIQUE (`user_id), 
+
+	CONSTRAINT `fk_user_session`
+		FOREIGN KEY (user_id)
+		REFERENCES `Users`(`id`)
+		ON DELETE CASCADE
+	
+	
+		);	
