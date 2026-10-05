@@ -18,6 +18,7 @@ function ask($question){
 	return trim(fgets(STDIN));
 }
 
+
 echo " Test F1 API \n"; 
 $name = ask("Enter a driver's name: ");
 
@@ -64,7 +65,7 @@ if ($name !== ""){
 	}
 }
 
-
+/*
 
 echo " Test Open Library API \n";
 $title = ask("Enter a book title: ");
@@ -86,6 +87,5 @@ if ($title !== " "){
 	}
 }
 	
-
-
+*/
 
