@@ -14,13 +14,23 @@ else
   $msg = "test message";
 }
 
+//this code sets the user entered stuff they put into the form into variables to bbe sent to backend database
 $request = array();
-$request['type'] = "Login";
-$request['username'] = "steve";
-$request['password'] = "password";
+$request['type'] = "register";
+$request['email'] = $_POST['email'];
+$request['username'] = $_POST['username'];
+$request['password'] = $_POST['password'];
 $request['message'] = $msg;
 $response = $client->send_request($request);
 //$response = $client->publish($request);
+
+if($response['returnCode'] == "1"){
+	header()//set this to login page 
+
+}else{
+
+//some error message and send back to register
+}
 
 $payload = json_encode($response);
 echo $payload;
