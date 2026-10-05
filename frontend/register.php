@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	exit();
 } else {
 	header('Location: register.php?error=1');
+	exit();
 	}
 }
 ?>
