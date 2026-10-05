@@ -25,9 +25,9 @@ function doLogin($email, $password)
 
 		$st = $db->prepare("INSERT INTO Sessions (user_id, token, expires) VALUES (:user_id, :token, :expires) ON DUPLICATE KEY UPDATE token = :token2, expires = :expires2");
 		$st->execute(['user_id' => $user_id, 'token' => $token, 'expires' => $expiration, 'token2' => $token, 'expires2' => $expiration]);
-		return array("status" => "1", "message" => "login successful", "session_token" => $token);
+		return array("returnCode" => "1", "message" => "login successful", "session_token" => $token);
         }
-	return array("status" => "0", "message" => "login unsuccessful");
+	return array("returnCode" => "0", "message" => "login unsuccessful");
 
 	}
 
@@ -43,7 +43,7 @@ function doRegister($email, $username, $password){
 
 	if(!empty($fetch)){
 	 
-		return array("status" => "0", "message" => "registration unsuccessful: duplicate username or email");
+		return array("returnCode" => "0", "message" => "registration unsuccessful: duplicate username or email");
 	}
 
 
@@ -52,7 +52,7 @@ function doRegister($email, $username, $password){
 	$st->execute(['email' => $email, 'username' => $username, 'password' => $hash]);
 	$fetch = $st->fetch(PDO::FETCH_ASSOC);
 	 
-	return array("status" => "1", "message" => "registration successful");
+	return array("returnCode" => "1", "message" => "registration successful");
 	
 }
 
@@ -65,10 +65,10 @@ function doValidate($token){
         $fetch = $st->fetch(PDO::FETCH_ASSOC);
 	
 	if(!empty($fetch)){
-		return array("status" => "1", "message" => "valid session");
+		return array("returnCode" => "1", "message" => "valid session");
 	}
 	
-	return array("status" => "0", "message" => "invalid session");
+	return array("returnCode" => "0", "message" => "invalid session");
 	
 }
 
