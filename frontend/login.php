@@ -8,13 +8,13 @@ function sendRequest($request) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$response = sendRequest([
-	'type' => 'Login',
+	'type' => 'login',
 	'email' => $_POST['email'] ?? '',
 	'password' => $_POST['password']  ?? '',
 	]);
 
 	if (isset($response['returnCode']) && $response['returnCode'] === '1') {
-		setcookie('session_key', 'FAKEKEY123', time() + 3600, '/');
+		setcookie('session_key', $response['session_token'], time() + 3600, '/');
 		header('Location: home.php');
 		exit();
 	} else {

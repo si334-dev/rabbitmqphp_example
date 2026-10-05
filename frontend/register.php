@@ -8,7 +8,7 @@ function sendRequest($request) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$response = sendRequest([
-	'type' => 'Registration',
+	'type' => 'register',
 	'email' => $_POST['email'] ?? '',
 	'password' => $_POST['password'] ?? '',
 	]);
