@@ -97,7 +97,7 @@ function requestProcessor($request)
     case "login":
       return doLogin($request['email'],$request['password']);
     case "validate_session":
-      return doValidate($request['sessionId']);
+      return doValidate($request['session_key']);
     case "register":
       return doRegister($request['email'], $request['username'], $request['password']);
   }
