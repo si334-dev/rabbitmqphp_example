@@ -10,17 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $request = [
 	'type' => 'register',
+	'username' => $_POST['username'] ?? '',
 	'email' => $_POST['email'] ?? '',
 	'password' => $_POST['password'] ?? '',
 ];
 
-try {
-	$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
-	$response = $client->send_request($request);
-} catch (Exception $e) {
-	header('Location: register.php?error=server');
-	exit();
-}
+$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+$response = $client->send_request($request);
 
 if (($response['returnCode'] ?? '0') == '1') {
 	header('Location: login.php?registered=1');
