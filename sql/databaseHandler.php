@@ -11,9 +11,11 @@ $db = new mysqli('127.0.0.1', "testUser", "admin", "website_data");
 function doLogin($email, $password)
 {
 	global $db;
-	$st = $db->prepare("SELECT id, email, username, password from Users WHERE Users.email = :email");
-	$st->execute(['email' => $email]);
-	$fetch = $st->fetch(PDO::FETCH_ASSOC);
+	$st = $db->prepare("SELECT id, email, username, password from Users WHERE Users.email = ?");
+	$st->bind_param("s", $email);
+	$st->execute();
+	$res = $st->get_result();
+	$fetch = $res->fetch_assoc();
 
 	if(empty($fetch)){
 		return array("status" => "0", "message" => "login unsuccessful");
@@ -23,8 +25,9 @@ function doLogin($email, $password)
 		$expiration = date("Y-m-d H:i:s", strtotime("+1 hour"));
 		$user_id = $fetch['id'];
 
-		$st = $db->prepare("INSERT INTO Sessions (user_id, token, expires) VALUES (:user_id, :token, :expires) ON DUPLICATE KEY UPDATE token = :token2, expires = :expires2");
-		$st->execute(['user_id' => $user_id, 'token' => $token, 'expires' => $expiration, 'token2' => $token, 'expires2' => $expiration]);
+		$st = $db->prepare("INSERT INTO Sessions (user_id, token, expires) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE token = ?, expires = ?");
+		$st->bind_param("issss", $user_id, $token, $expiration, $token, $expiration);
+		$st->execute();
 		return array("returnCode" => "1", "message" => "login successful", "session_token" => $token);
         }
 	return array("returnCode" => "0", "message" => "login unsuccessful");
@@ -37,9 +40,11 @@ function doRegister($email, $username, $password){
 	
 	global $db;
 	
-	$st = $db->prepare("SELECT email, username FROM Users WHERE Users.email = :email OR Users.username = :username");
-	$st->execute(['email' => $email, 'username' => $username]);
-	$fetch = $st->fetch(PDO::FETCH_ASSOC);
+	$st = $db->prepare("SELECT email, username FROM Users WHERE Users.email = ? OR Users.username = ?");
+	$st->bind_param("ss", $email, $username);
+	if($st->execute()){
+	$res = $st->get_result();
+	$fetch = $res->fetch_assoc();
 
 	if(!empty($fetch)){
 	 
@@ -48,11 +53,16 @@ function doRegister($email, $username, $password){
 
 
 	$hash = password_hash($password, PASSWORD_BCRYPT);
-	$st = $db->prepare("INSERT INTO Users (email, username, password) VALUES (:email, :username, :password)");
-	$st->execute(['email' => $email, 'username' => $username, 'password' => $hash]);
-	$fetch = $st->fetch(PDO::FETCH_ASSOC);
+	$st = $db->prepare("INSERT INTO Users (email, username, password) VALUES (?, ?, ?)");
+	$st->bind_param("sss", $email, $username, $hash);
+	$st->execute();
+	//$res = $st->get_result();
+	//$fetch = $res->fetch_assoc();
 	 
 	return array("returnCode" => "1", "message" => "registration successful");
+	}
+	
+	return array("returnCode" => "0", "message" => "registration unsuccessful: duplicate username or email");
 	
 }
 
@@ -60,9 +70,11 @@ function doRegister($email, $username, $password){
 function doValidate($token){
 	global $db;
 
-        $st = $db->prepare("SELECT * FROM Sessions WHERE Sessions.token = :token");
-        $st->execute(['token' => $token]);
-        $fetch = $st->fetch(PDO::FETCH_ASSOC);
+	$st = $db->prepare("SELECT * FROM Sessions WHERE Sessions.token = ?");
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+        $fetch = $res->fetch_assoc();
 	
 	if(!empty($fetch)){
 		return array("returnCode" => "1", "message" => "valid session");
