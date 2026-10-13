@@ -38,9 +38,9 @@
 
 	$start = getJson('https://api.jolpi.ca/ergast/f1/current');
 
-	$results = getJson("$start/last/results.json");
-	$pitstops = getJson("$start/last/pitstops.json?limit=100");
-	$season = getJson("$start/fastest/1/results.json?limit=100");
+	$results = getJson("https://api.jolpi.ca/ergast/f1/current/last/results.json");
+	$pitstops = getJson("https://api.jolpi.ca/ergast/f1/current/last/pitstops.json?limit=100");
+	$season = getJson("https://api.jolpi.ca/ergast/f1/current/fastest/1/results.json?limit=100");
 
 	$race = $results['MRData']['RaceTable']['Races'][0] ?? null;
 	$circuitName = $race['raceName'] ?? 'Unavailable';
