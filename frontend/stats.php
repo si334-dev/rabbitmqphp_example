@@ -123,7 +123,7 @@
 		
 		<h3>Fastest Pit Stops</h3>   <!--displays top 5 fastests pit stops of the race-->
 		<?php foreach($fastestStops as $s) {?>
-			<p> test  <?php echo $s['driverId']; ?> - <?php echo $s['duration']; ?> seconds (lap <?php echo $s['lap'];?>) </p> 
+			<p>  <?php echo $s['driverId']; ?> - <?php echo $s['duration']; ?> seconds (lap <?php echo $s['lap'];?>) </p> 
 		<?php } ?>
 
 		<h3>Fastest Lap </h3> 

@@ -1,4 +1,32 @@
-<?php 
+<?php
+
+	require_once('path.inc');
+	require_once('get_host_info.inc');
+	require_once('rabbitMQLib.inc');
+
+	$sessionkey = $_COOKIE['session_key'] ?? ' ';
+	$valid = 0;
+
+
+	if ($sessionKey !== '') {
+		try {
+			$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
+			$response = $client->send_request([
+				'type' => 'validate_session',
+				'session_key' => $sessionkey,
+			]);
+			$valid = $response['returnCode'] ?? '0';
+		} catch (Exception $e) {
+			$valid = '0';
+		}
+	}
+
+	if ($valid != '1') {
+		header('Location: login.php');
+		exit();
+	}
+
+
 	$today = date('Y-m-d');
 
 	function getJson($url){
