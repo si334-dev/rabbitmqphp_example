@@ -162,6 +162,19 @@ function joinLeague($code, $token){
 	}
 	
 	$leagueID = $leagueInfo['id'];
+
+
+	$st->close();	
+	$st = $db->prepare("SELECT * FROM LeagueUsers WHERE league_id = ? AND user_id = ?");
+	$st->bind_param("ii", $leagueID, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueCheck = $res->fetch_assoc();
+	
+	if(!empty($leagueCheck)){
+		return array("returnCode" => "0", "message" => "You are already part of this league");
+	}
+
 	$db->query("INSERT INTO LeagueUsers (league_id, user_id) VALUES ($leagueID, $user_id)");
 	
 	return array("returnCode" => "1", "message" => "League successfully joined", "leagueID" => $leagueID);
