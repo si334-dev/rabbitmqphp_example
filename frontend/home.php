@@ -2,6 +2,8 @@
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('./app/helpers.php');
+displaySessionMessage();
 
 $sessionKey = $_COOKIE['session_key'] ?? '';
 $valid = '0';

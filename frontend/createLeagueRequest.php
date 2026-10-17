@@ -24,9 +24,10 @@ try {
 }
 
 if (($response['returnCode'] ?? '0') == '1') {
-	$id = $response['league_id'];
+	$id = $response['leagueID'];
 	header("Location: league.php?id=$id");
 } else {
+	$_COOKIE['message'] = $response['message'];
 	header('Location: createLeague.php?error=1');
 }
 exit();

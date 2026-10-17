@@ -125,6 +125,48 @@ function createLeague($name, $desc, $token){
 	
 }
 
+function joinLeague($code, $token){
+	global $db;
+
+	$st = $db->prepare("
+	SELECT * FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+		
+	$st->close();	
+	$st = $db->prepare("SELECT * FROM Leagues WHERE url_invite_code = ?");
+	$st->bind_param("s", $code);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueInfo = $res->fetch_assoc();
+	
+	if(empty($leagueInfo)){
+		return array("returnCode" => "0", "message" => "League invite code is incorrect");
+	}
+	
+	$leagueID = $leagueInfo['id'];
+	$db->query("INSERT INTO LeagueUsers (league_id, user_id) VALUES ($leagueID, $user_id)");
+	
+	return array("returnCode" => "1", "message" => "League successfully joined", "leagueID" => $leagueID);
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -143,6 +185,8 @@ function requestProcessor($request)
       return doRegister($request['email'], $request['username'], $request['password']);
     case "createLeague":
       return createLeague($request['name'], $request['desc'], $request['token']);
+    case "createLeague":
+      return joinLeague($request['joinCode'], $request['token']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");

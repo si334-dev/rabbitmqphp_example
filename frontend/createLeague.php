@@ -1,3 +1,8 @@
+<?php
+require_once('./app/helpers.php')
+displaySessionMessage();
+?>
+
 <!DOCTYPE html>
 <html>
 <head><title>Create League</title></head>
