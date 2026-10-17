@@ -84,6 +84,47 @@ function doValidate($token){
 	
 }
 
+function createLeague($name, $desc, $token){
+	global $db;
+	//This preparation is to get user details from their session_token, REUSE THIS IF YOU NEED IT
+	$st = $db->prepare("
+	SELECT * FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+	$username = $userDetails[1];
+	$email = $userDetails[2];
+
+	$st->close();//i think this is needed when switching to prepare a different statement
+	$st = $db->prepare("INSERT INTO Leagues (name, description, url_invite_code) VALUES (?, ?, ?)");
+	$urlCode = uniqid();	
+	$st->bind_param("sss", $name, $desc, $urlCode);
+	if(!$st->execute()){ return array("returnCode" => "0", "message" => "Error creating league, please try again");}
+
+	$leagueID = $db->insert_id;
+
+	$isOwner = 1;
+	$db->query("INSERT INTO LeagueUsers (league_id, user_id, isOwner) VALUES ($leagueID, $user_id, $isOwner)");
+	
+	return array("returnCode" => "1", "message" => "League successfully created");
+	
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -100,6 +141,8 @@ function requestProcessor($request)
       return doValidate($request['session_key']);
     case "register":
       return doRegister($request['email'], $request['username'], $request['password']);
+    case "createLeague":
+      return createLeague($request['name'], $request['desc'], $request['token']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
