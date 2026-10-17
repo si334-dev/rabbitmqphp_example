@@ -121,7 +121,7 @@ function createLeague($name, $desc, $token){
 	$isOwner = 1;
 	$db->query("INSERT INTO LeagueUsers (league_id, user_id, isOwner) VALUES ($leagueID, $user_id, $isOwner)");
 	
-	return array("returnCode" => "1", "message" => "League successfully created");
+	return array("returnCode" => "1", "message" => "League successfully created", "leagueID" => $leagueID);
 	
 }
 
