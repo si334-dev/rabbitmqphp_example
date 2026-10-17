@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $request = [
 	'type' => 'createLeague',
-	'name' => $_POST['League Name'] ?? '',
+	'name' => $_POST['LeagueName'] ?? '',
 	'desc' => $_POST['Description'] ?? '',
 	'token' => $_COOKIE['session_key']
 ];
