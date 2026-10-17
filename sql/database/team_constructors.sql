@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS `website_data`.`TeamConstructors`(
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	
 
-	PRIMARY KEY('team_id', 'constructor_id'),
+	PRIMARY KEY(`team_id`, `constructor_id`),
 
-	FOREIGN KEY('team_id')
-	REFERENCES 'website_data'.'UserTeams' ('id')
+	FOREIGN KEY(`team_id`)
+	REFERENCES `website_data`.`UserTeams` (`id`)
 	ON DELETE CASCADE,
 
-	FOREIGN KEY('constructor_id')
-	REFERENCES 'website_data'.'Constructors' ('id')
-	ON DELETE CASECADE --idk if this is needed bu t constructors  hsouldnt be deleted anyway hopefully
+	FOREIGN KEY(`constructor_id`)
+	REFERENCES `website_data`.`Constructors` (`id`)
+	ON DELETE CASCADE -- idk if this is needed bu t constructors  hsouldnt be deleted anyway hopefully
 	
 
 );
