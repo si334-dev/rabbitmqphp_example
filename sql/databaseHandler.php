@@ -88,7 +88,7 @@ function createLeague($name, $desc, $token){
 	global $db;
 	//This preparation is to get user details from their session_token, REUSE THIS IF YOU NEED IT
 	$st = $db->prepare("
-	SELECT * FROM Users
+	SELECT Users.id, Users.email, Users.username FROM Users
 	JOIN Sessions
 	ON Users.id = Sessions.user_id
 	WHERE Sessions.token = ?
@@ -129,7 +129,7 @@ function joinLeague($code, $token){
 	global $db;
 
 	$st = $db->prepare("
-	SELECT * FROM Users
+	SELECT Users.id, Users.email, Users.username FROM Users
 	JOIN Sessions
 	ON Users.id = Sessions.user_id
 	WHERE Sessions.token = ?
