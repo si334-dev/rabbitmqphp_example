@@ -86,7 +86,7 @@ function doValidate($token){
 
 function createLeague($name, $desc, $token){
 	global $db;
-	//This preparation is to get user details from their session_token, REUSE THIS IF YOU NEED IT
+	//This preparation is to get user details from their session_token, REUSE THIS IF YOU NEED IT, prob should be a function
 	$st = $db->prepare("
 	SELECT Users.id, Users.email, Users.username FROM Users
 	JOIN Sessions
@@ -180,6 +180,52 @@ function joinLeague($code, $token){
 	return array("returnCode" => "1", "message" => "League successfully joined", "leagueID" => $leagueID);
 }
 
+function getLeagueInfo($id, $token){
+	
+	global $db;
+
+	$st = $db->prepare("
+	SELECT Users.id, Users.email, Users.username FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+
+
+
+	$st->close();	
+	$st = $db->prepare("
+	SELECT Leagues.name, Leagues.description, Leagues.url_invite_code, LeagueUser.isOwner FROM Leagues
+	JOIN LeagueUsers 
+	ON Users.id = LeagueUsers.user_id
+	WHERE User.id = ?
+		");
+	$st->bind_param("s", $code);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueInfo = $res->fetch_assoc();
+	
+	if(empty($leagueInfo)){
+		return array("returnCode" => "0", "message" => "League invite code is incorrect");
+
+
+
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -198,8 +244,10 @@ function requestProcessor($request)
       return doRegister($request['email'], $request['username'], $request['password']);
     case "createLeague":
       return createLeague($request['name'], $request['desc'], $request['token']);
-    case "createLeague":
+    case "joinLeague":
       return joinLeague($request['joinCode'], $request['token']);
+    case "getLeagueInfo":
+      return getLeagueInfo($request['league_id'], $request['token']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
