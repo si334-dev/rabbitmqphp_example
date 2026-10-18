@@ -1,30 +1,12 @@
 <?php
-require_once('path.inc');
-require_once('get_host_info.inc');
-require_once('rabbitMQLib.inc');
+require_once('session.php');
+
+$user = requireLogin();
+
 require_once('./app/helpers.php');
 displaySessionMessage();
 
-$sessionKey = $_COOKIE['session_key'] ?? '';
-$valid = '0';
 
-if ($sessionKey !== '') {
-	try {
-		$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
-		$response = $client->send_request([
-			'type' => 'validate_session',
-			'session_key' => $sessionKey,
-		]);
-		$valid = $response['returnCode'] ?? '0';
-	} catch (Exception $e) {
-		$valid = '0';
-	}
-}
-
-if ($valid != '1') {
-	header('Location: login.php');
-	exit();
-}
 $nextRace = null;
 $context = stream_context_create(['http' => ['timeout' => 5]]);
 $json = @file_get_contents('https://api.jolpi.ca/ergast/f1/current/next.json', false, $context);
