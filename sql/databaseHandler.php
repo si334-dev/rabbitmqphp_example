@@ -204,25 +204,37 @@ function getLeagueInfo($id, $token){
 	
 	
 	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
-
+	$user_id = $userDetails[0];
 
 
 	$st->close();	
 	$st = $db->prepare("
-	SELECT Leagues.name, Leagues.description, Leagues.url_invite_code, LeagueUser.isOwner FROM Leagues
+	SELECT Leagues.name, Leagues.description, Leagues.url_invite_code, LeagueUsers.isOwner FROM Leagues
 	JOIN LeagueUsers 
-	ON Users.id = LeagueUsers.user_id
-	WHERE User.id = ?
+	ON Leagues.id = LeagueUsers.league_id
+	WHERE LeagueUsers.user_id = ? AND Leagues.id = ?
 		");
-	$st->bind_param("s", $code);
+	$st->bind_param("ii", $user_id, $id);
 	$st->execute();
 	$res = $st->get_result();
         $leagueInfo = $res->fetch_assoc();
 	
 	if(empty($leagueInfo)){
-		return array("returnCode" => "0", "message" => "League invite code is incorrect");
+		return array("returnCode" => "0", "message" => "You are not a member of this league");
+	}
+	$st->close();	
+	$st = $db->prepare("
+	SELECT Users.username, Users.id FROM Users
+	JOIN LeagueUsers 
+	ON Users.id = LeagueUsers.user_id
+	WHERE LeagueUsers.league_id = ?
+		");
+	$st->bind_param("i", $id);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueMembers = $res->fetch_all(MYSQLI_ASSOC);
 
-
+	return array("returnCode" => "1", "message" => "League info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueInfo, "leagueMembers" => $leagueMembers);
 
 }
 

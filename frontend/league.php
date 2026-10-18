@@ -10,10 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 if (!isset($_COOKIE['session_key'])){ header('Location: login.php'); exit();}
 
+include ('nav.php'); //idk if this should go here 
 
 $request = [
 	'type' => 'getLeagueInfo',
-	'league_id' => $_GET['id'];
+	'league_id' => $_GET['id'],
 	'token' => $_COOKIE['session_key']
 ];
 
@@ -26,11 +27,38 @@ try {
 }
 
 if (($response['returnCode'] ?? '0') == '1') {
-	
-	//maybe put stuff here
+	$h = var_dump($response);
+	echo "$h";
+	$leagueInfo = $response['leagueInfo'];
+	$leagueMembers = $response['leagueMembers'];
 } else {
-	$_COOKIE['message'] = $response['message'];
+	setcookie('message', "$message", time() - 3600, '/');
 	header('Location: home.php?error=1');
 	exit();
 }
+?>
+<!DOCTYPE html>
+<html>
+<head><title>League Page</title></head>
+<body>
+	<h1> League Page </h1>
+	<?php 
+	$name = $leagueInfo['name'];
+	$desc = $leagueInfo['description'];
+	$code_url = "www.sample.com/joinLeagueRequest.php?code=" . $leagueInfo['url_invite_code'];
+
+	echo "<strong>League Name:</strong>" . " " . " <p>$name </p>";
+	echo "<strong>League Description:</strong>" . " " . " <p>$name </p>";
+	echo "<strong>Invite a Friend with this link: </strong>" . " " . "<p> $code_url </p>";
+	?>
+	<strong> Members: </strong>
+	<?php foreach ($leagueMembers as $member){
+		$username = $member['username'];
+		echo "<p>$username</p>" . " ";
+	}
+	?>
+	
+	<a href="logout.php">Log out</a>
+</body>
+</html>
 
