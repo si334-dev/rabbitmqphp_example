@@ -96,12 +96,8 @@
 	}
 	?>
 
-<!-- here goes the next races with circuit and time for time at track -->
-<!-- for the upcoming race will be divided in days with the time for the free practices, qualy, and race -->
-
 
 	<h3> Past Races </h3>
-<!-- past races with just date and circuit -->
 	<?php foreach($past as $race){
 		echo "<p>" . $race['date'] . " - " . $race['raceName'] . "</p>";
 	}
