@@ -29,7 +29,8 @@ if (($response['returnCode'] ?? '0') == '1') {
 	$id = $response['leagueID'];
 	header("Location: league.php?id=$id");
 } else {
-	$_COOKIE['message'] = $response['message'];
+	setcookie('message', "$message", time() + 60, '/');
+
 	header('Location: home.php?error=1');
 }
 exit();

@@ -28,7 +28,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 	header("Location: league.php?id=$id");
 } else {
 	$message = $response['message'];
-	setcookie('message', "$message", time() - 3600, '/');
+	setcookie('message', "$message", time() + 60, '/');
 	header('Location: createLeague.php?error=1');
 }
 exit();

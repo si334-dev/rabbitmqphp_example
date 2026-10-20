@@ -48,6 +48,7 @@ $need = $data['MRData']['DriverTable']['Drivers'];
 <html>
 <head><title>Home</title></head>
 <body>
+<?php include ('nav.php'); ?>
 	<h1> Drivers 2026 </h1>
 	<ul>
 	<?php foreach ($need as $driver){ ?>

@@ -48,6 +48,7 @@ $need = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'
 <html>
 <head><title>Home</title></head>
 <body>
+<?php include ('nav.php'); ?>
 	<h1> Standings 2026 </h1>
 	<ul>
 	<?php foreach ($need as $standing){ ?>
