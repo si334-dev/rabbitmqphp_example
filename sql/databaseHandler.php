@@ -238,6 +238,60 @@ function getLeagueInfo($id, $token){
 
 }
 
+
+function getMyLeagues($token)
+{
+    global $db;
+
+    // Find the user associated with this session token.
+    $st = $db->prepare("
+        SELECT user_id
+        FROM Sessions
+        WHERE token = ?
+    ");
+    $st->bind_param("s", $token);
+    $st->execute();
+
+    $result = $st->get_result();
+    $user = $result->fetch_assoc();
+    $st->close();
+
+    if (empty($user)) {
+        return [
+            "returnCode" => "0",
+            "message" => "Invalid session"
+        ];
+    }
+
+    $userID = $user['user_id'];
+
+    // Get all leagues this user belongs to.
+    $st = $db->prepare("
+        SELECT Leagues.id, Leagues.name,
+               Leagues.description, LeagueUsers.isOwner
+        FROM Leagues
+        JOIN LeagueUsers
+            ON Leagues.id = LeagueUsers.league_id
+        WHERE LeagueUsers.user_id = ?
+        ORDER BY Leagues.name
+    ");
+
+    $st->bind_param("i", $userID);
+    $st->execute();
+
+    $result = $st->get_result();
+    $leagues = $result->fetch_all(MYSQLI_ASSOC);
+    $st->close();
+
+    return [
+        "returnCode" => "1",
+        "message" => "Leagues retrieved successfully",
+        "leagues" => $leagues
+    ];
+}
+
+
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -245,7 +299,7 @@ function requestProcessor($request)
   if(!isset($request['type']))
   {
     return "ERROR: unsupported message type";
-  }
+  
   switch ($request['type'])
   {
     case "login":
@@ -260,6 +314,9 @@ function requestProcessor($request)
       return joinLeague($request['joinCode'], $request['token']);
     case "getLeagueInfo":
       return getLeagueInfo($request['league_id'], $request['token']);
+    case "getMyLeagues":
+    	return getMyLeagues($request['token']);
+
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
