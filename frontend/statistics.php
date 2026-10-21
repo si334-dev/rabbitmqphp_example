@@ -46,6 +46,9 @@
 	<h5> Fastest Laps </h5>
 	<!-- how many times a driver has achieved the fastest lap in a race -->
 	
+	<h5> Sprint Races Podiums </h5>
+	<!-- forgot the existance of sprint races and this will have to be added, why are there sprints????????-->
+
 
 </body>
 
