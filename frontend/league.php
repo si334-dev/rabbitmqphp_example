@@ -32,7 +32,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 	$leagueInfo = $response['leagueInfo'];
 	$leagueMembers = $response['leagueMembers'];
 } else {
-	setcookie('message', "$message", time() - 3600, '/');
+	setcookie('message', "$message", time() + 60, '/');
 	header('Location: home.php?error=1');
 	exit();
 }

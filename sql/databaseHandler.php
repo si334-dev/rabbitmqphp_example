@@ -239,6 +239,7 @@ function getLeagueInfo($id, $token){
 }
 
 
+
 function getMyLeagues($token)
 {
     global $db;
@@ -292,6 +293,49 @@ function getMyLeagues($token)
 
 
 
+function getProfileInfo($token){
+	
+	global $db;
+
+	$st = $db->prepare("
+	SELECT Users.id, Users.email, Users.username FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+	
+	$st->close();	
+	$st = $db->prepare("
+	SELECT Leagues.name, Leagues.id FROM Leagues
+	JOIN LeagueUsers
+	ON Leagues.id = LeagueUsers.league_id
+	WHERE LeagueUsers.user_id = ?
+		");
+	$st->bind_param("i", $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$leagueList = $res->fetch_all(MYSQLI_ASSOC);
+
+	
+	return array("returnCode" => "1", "message" => "Profile info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueList);
+}
+
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -299,7 +343,7 @@ function requestProcessor($request)
   if(!isset($request['type']))
   {
     return "ERROR: unsupported message type";
-  
+  }
   switch ($request['type'])
   {
     case "login":
@@ -314,9 +358,11 @@ function requestProcessor($request)
       return joinLeague($request['joinCode'], $request['token']);
     case "getLeagueInfo":
       return getLeagueInfo($request['league_id'], $request['token']);
+
     case "getMyLeagues":
     	return getMyLeagues($request['token']);
-
+    case "getProfileInfo":
+      return getProfileInfo($request['token']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
