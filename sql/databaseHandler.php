@@ -362,8 +362,53 @@ function getEval($token, $league_id){
 	$user_id = $userDetails[0];
 	
 	$st->close();
-	
+
+	$st = $db->prepare("
+	SELECT Drivers.familyName, Drivers.givenName, DriverStats.lastRaceResult, DriverStats.fastestLapRank FROM DriverStats
+	JOIN Drivers ON Drivers.api_driver_id = DriverStats.api_driver_id
+	JOIN TeamDrivers ON Drivers.id = TeamDrivers.driver_id 
+	JOIN UserTeams ON UserTeams.id = TeamDrivers.team_id
+	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
+
+	");	
 		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$drivers = $res->fetch_all(MYSQLI_ASSOC);;
+
+	if(empty($drivers)){
+		return array("returnCode" => "0", "message" => "You have no drivers");
+	}
+	$st->close();
+	
+	$st = $db->prepare("
+	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM ConstructorStats
+	JOIN Constructors ON Constructors.api_constructor_id = ConstructorStats.api_constructor_id
+	JOIN TeamConstructors ON Constructors.id = TeamConstructors.constructor_id 
+	JOIN UserTeams ON UserTeams.id = TeamConstructors.team_id
+	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
+
+	");	
+		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$constructors = $res->fetch_all(MYSQLI_ASSOC);
+		
+	if(empty($constructors)){
+		return array("returnCode" => "0", "message" => "You have no constructors");
+	}
+
+	$st->close();
+	$st = $db->prepare("SELECT name, currentPoints FROM UserTeams WHERE league_id = ? AND user_id = ?");
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$teamInfo = $res->fetch_assoc();
+
+	return array("returnCode" => "1", "message" => "Evaluation retrieved", 
+       "teamInfo" => $teamInfo, "drivers" => $drivers, "constructors" => $constructors);
 
 
 }
