@@ -17,7 +17,7 @@ function getJson($url){
 }
 
 
-$data = getJson("http://api.jolpi.ca/ergast/f1/2026/drivers/");
+$data = getJson("http://api.jolpi.ca/ergast/f1/2026/drivers/?limit=100");
 //print_r($data);
 $need = $data['MRData']['DriverTable']['Drivers'];
 
@@ -29,8 +29,8 @@ $wiki = $driver['url'] ?? '';
 $familyName = $driver['familyName'];
 $birth = $driver['dateOfBirth'] ?? null; 
 $nat = $driver['nationality'] ?? '';
-
-$st = $db->prepare("INSERT INTO Drivers (api_driver_id, wiki_url, permNum, givenName, familyName, dateOfBirth, nationality)
+echo $id . "   ";
+$st = $db->prepare("INSERT IGNORE INTO Drivers (api_driver_id, wiki_url, permNum, givenName, familyName, dateOfBirth, nationality)
 	VALUES (?, ?, ?, ?, ?, ?, ?)
 
 	");
@@ -52,7 +52,7 @@ $name = $constructor['name'];
 $wiki = $constructor['url'] ?? '';
 $nat = $constructor['nationality'] ?? '';
 
-$st = $db->prepare("INSERT INTO Constructors (api_constructor_id, wiki_url, name, nationality)
+$st = $db->prepare("INSERT IGNORE INTO Constructors (api_constructor_id, wiki_url, name, nationality)
 	VALUES (?, ?, ?, ?)
 
 	");

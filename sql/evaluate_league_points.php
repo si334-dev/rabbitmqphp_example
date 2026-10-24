@@ -27,7 +27,7 @@ function getJson($url){
 
 function updateDraftPowerStats(){
 	global $db;
-	$data = getJson("http://api.jolpi.ca/ergast/f1/current/driverstandings/");
+	$data = getJson("http://api.jolpi.ca/ergast/f1/current/driverstandings/?limit=100");
 	$fullStandings = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'];
 	$totalPoints = 0;
 
@@ -41,7 +41,7 @@ function updateDraftPowerStats(){
 		$currentPlacement = $standing['positionText'];
 		$currentPoints = $standing['points'];
 		$percentage = $standing['points'] / $totalPoints;
-		$power = round($percentage * 600);
+		$power = round($percentage * 3500);
 
 
 		$st = $db->prepare("
@@ -55,7 +55,7 @@ function updateDraftPowerStats(){
 	}
 
 	
-	$data = getJson("http://api.jolpi.ca/ergast/f1/current/constructorstandings/");
+	$data = getJson("http://api.jolpi.ca/ergast/f1/current/constructorstandings/?limit=100");
 	$fullStandings = $data['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'];
 	$totalPoints = 0;
 	
@@ -69,7 +69,7 @@ function updateDraftPowerStats(){
 		$percentage = $standing['points'] / $totalPoints;
 		$currentPlacement = $standing['positionText'];
 		$currentPoints = $standing['points'];
-		$power = round($percentage * 400);
+		$power = round($percentage * 2500);
 
 
 		$st = $db->prepare("	
@@ -90,7 +90,7 @@ function updateDraftPowerStats(){
 function populateResultStats(){
 
 	global $db;
-	$data = getJson("http://api.jolpi.ca/ergast/f1/2026/last/results/");
+	$data = getJson("http://api.jolpi.ca/ergast/f1/2026/last/results/?limit=100");
 	$lastRace = $data['MRData']['RaceTable']['Races'][0];
 	$info = ['name' => $lastRace['raceName'], 'date' => $lastRace['date'], 'podium' => [], 'fastest' => null];
 	$combinedPoints = [];
@@ -231,7 +231,7 @@ function evalPoints(){
 
 			//this makes it so the amount of points a person gets in the the game is tied to the combined
 			//points that a teams drivers earned divided by 2, change later for better system
-			$pointsToAdd += round ((int)$result['combinedDriverPoints'] / 2);
+			$pointsToAdd += round ((int)$result['combinedDriverPoints'] * 2);
 			
 		}
 
