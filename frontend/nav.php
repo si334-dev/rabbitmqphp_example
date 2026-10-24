@@ -6,7 +6,7 @@
 <nav>
 	<a href="home.php">Home</a>
 	<a href="profile.php">Profile</a>
-	<a href="standings.php">Standings</a>
+	<a href="statistics.php">Standings</a>
 	<a href="results.php">Results</a>
 	<a href="drivers.php">Drivers</a>
 	<a href="team_search.php">Teams</a>
