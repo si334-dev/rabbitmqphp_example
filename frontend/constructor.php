@@ -38,7 +38,7 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 
 		$data = getJson("$base/current/constructors/$id/constructorStandings.json");
 
-		$standing = $data['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStanding'][0] ?? null;
+		$standing = $data['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'][0] ?? null;
 
 		$data = getJson ("$base/current/constructors/$id/drivers.json");
 
@@ -58,7 +58,7 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 <body>
 	<?php include('nav.php'); ?>
 
-	<?php if (!team): ?>
+	<?php if (!$team): ?>
 		<h2>Constructor not found</h2>
 		<p>Go back to <a href ="team_search.php">Teams</a>.</p>
 	<?php else: ?>
@@ -70,7 +70,7 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 		<?php if ($standing): ?>
 			<p>Championship position: P<?php echo htmlspecialchars($standing['position']); ?></p>
 			<p>Points: <?php echo htmlspecialchars($standing['points']); ?></p>
-			<p>Wins: <?php echo htmlspecialchars($standings['wins']); ?></p>
+			<p>Wins: <?php echo htmlspecialchars($standing['wins']); ?></p>
 		<?php else: ?>
 			<p>No standings this season.</p>
 		<?php endif; ?>
@@ -79,7 +79,7 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 		<?php if ($teamDrivers): ?>
 			<ul>
 			<?php foreach ($teamDrivers as $d): ?>
-				<li><a href="driver.php?id=<?php echo urlencode($d['driverId']); ?>"><?php echo htmlspecialchars($d['givenName'] . ' ' . $d['familyName']); ?></a?</li>
+				<li><a href="driver.php?id=<?php echo urlencode($d['driverId']); ?>"><?php echo htmlspecialchars($d['givenName'] . ' ' . $d['familyName']); ?></a></li>
 			<?php endforeach; ?>
 			</ul>
 		<?php else: ?>
@@ -91,7 +91,7 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 			<p><?php echo htmlspecialchars($lastRace['raceName']); ?> (Round <?php echo htmlspecialchars($lastRace['round']); ?>)</p>
 			<ul>
 			<?php foreach ($lastRace['Results'] ?? [] as $r): ?>
-				<li><?php echo htmlspecialchars($r['Driver']['familyName']); ?>: P<?php echo htmlspcialchars($r['positionText']); ?> (<?php echo htmlspecialchars($r['points']); ?> pts)</li>
+				<li><?php echo htmlspecialchars($r['Driver']['familyName']); ?>: P<?php echo htmlspecialchars($r['positionText']); ?> (<?php echo htmlspecialchars($r['points']); ?> pts)</li>
 			<?php endforeach; ?>
 			</ul>
 		<?php else: ?>
