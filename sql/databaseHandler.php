@@ -335,6 +335,39 @@ function getProfileInfo($token){
 	return array("returnCode" => "1", "message" => "Profile info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueList);
 }
 
+function getEval($token, $league_id){
+
+	global $db;
+
+	$st = $db->prepare("
+	SELECT Users.id, Users.email, Users.username FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+	
+	$st->close();
+	
+		
+
+
+}
+
 
 function requestProcessor($request)
 {
@@ -363,6 +396,8 @@ function requestProcessor($request)
     	return getMyLeagues($request['token']);
     case "getProfileInfo":
       return getProfileInfo($request['token']);
+    case "getEval":
+      return getEval($request['token'], $request['league_id']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
