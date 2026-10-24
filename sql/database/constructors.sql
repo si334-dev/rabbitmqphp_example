@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS `website_data`.`Constructors`(
        	`nationality` VARCHAR(100), 	
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`id`)
+	PRIMARY KEY (`id`),
+	UNIQUE(`api_constructor_id`)
 
 );
