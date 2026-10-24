@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `website_data`.`UserTeams`(
 	`league_id` INT NOT NULL,
 	`user_id` INT NOT NULL, 
 	`name` VARCHAR(100) NOT NULL, -- stores user defined team name, mayber default to "users team"
-	`currentPoints` INT NOT NULL, -- sotres the points they have accrued over the season
+	`currentPoints` INT NOT NULL DEFAULT 0, -- sotres the points they have accrued over the season
 	`created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	
