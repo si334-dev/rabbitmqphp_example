@@ -1,4 +1,3 @@
-
 <?php
 require_once('path.inc');
 require_once('get_host_info.inc');
@@ -15,10 +14,7 @@ $leagues = [];
 $error = '';
 
 try {
-    $client = new rabbitMQClient(
-        "testRabbitMQ.ini",
-        "testServer"
-    );
+    $client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
 
     $response = $client->send_request([
         'type' => 'getMyLeagues',
@@ -63,30 +59,25 @@ try {
     <?php foreach ($leagues as $league): ?>
 
         <section>
-            <h2>
-                <?php echo htmlspecialchars($league['name']); ?>
-            </h2>
+            <h2><?php echo htmlspecialchars($league['name']); ?></h2>
 
-            <p>
-                <?php echo htmlspecialchars(
-                    $league['description'] ?? ''
-                ); ?>
-            </p>
+            <p><?php echo htmlspecialchars($league['description'] ?? ''); ?></p>
 
             <p>
                 Role:
-                <?php
-                echo (($league['isOwner'] ?? 0) == 1)
-                    ? 'Owner'
-                    : 'Member';
-                ?>
+                <?php echo (($league['isOwner'] ?? 0) == 1) ? 'Owner' : 'Member'; ?>
             </p>
 
-            <a href="league.php?id=<?php
-                echo urlencode($league['id']);
-            ?>">
-                View League
-            </a>
+            <p>Members: <?php echo (int)($league['memberCount'] ?? 0); ?></p>
+
+            <p>
+                Your team:
+                <?php echo htmlspecialchars($league['teamName'] ?? 'Not set up yet'); ?>
+            </p>
+
+            <a href="league.php?id=<?php echo urlencode($league['id']); ?>">View League</a>
+            |
+            <a href="team_management.php?league_id=<?php echo urlencode($league['id']); ?>">Manage Team</a>
         </section>
 
         <hr>
@@ -99,4 +90,3 @@ try {
 
 </body>
 </html>
-
