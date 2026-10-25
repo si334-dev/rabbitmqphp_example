@@ -234,7 +234,22 @@ function getLeagueInfo($id, $token){
 	$res = $st->get_result();
         $leagueMembers = $res->fetch_all(MYSQLI_ASSOC);
 
-	return array("returnCode" => "1", "message" => "League info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueInfo, "leagueMembers" => $leagueMembers);
+	$st->close();	
+	$st = $db->prepare("
+	SELECT Users.username, Users.id, UserTeams.currentPoints FROM Users
+	JOIN LeagueUsers 
+	ON Users.id = LeagueUsers.user_id
+	JOIN UserTeams
+	ON LeagueUsers.user_id = UserTeams.user_id
+	WHERE LeagueUsers.league_id = ? AND UserTeams.league_id = ?
+	ORDER BY UserTeams.currentPoints DESC
+		");
+	$st->bind_param("ii", $id, $id);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueLeaderboard = $res->fetch_all(MYSQLI_ASSOC);
+	
+	return array("returnCode" => "1", "message" => "League info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueInfo, "leagueMembers" => $leagueMembers, "leagueLeaderboard" => $leagueLeaderboard);
 
 }
 
@@ -267,15 +282,18 @@ function getMyLeagues($token)
     $userID = $user['user_id'];
 
     // Get all leagues this user belongs to.
-    $st = $db->prepare("
-        SELECT Leagues.id, Leagues.name,
-               Leagues.description, LeagueUsers.isOwner
-        FROM Leagues
-        JOIN LeagueUsers
-            ON Leagues.id = LeagueUsers.league_id
-        WHERE LeagueUsers.user_id = ?
-        ORDER BY Leagues.name
-    ");
+   $st = $db->prepare("
+    SELECT Leagues.id, Leagues.name, Leagues.description, LeagueUsers.isOwner,
+           (SELECT COUNT(*) FROM LeagueUsers lu WHERE lu.league_id = Leagues.id) AS memberCount,
+           UserTeams.name AS teamName
+    FROM Leagues
+    JOIN LeagueUsers ON Leagues.id = LeagueUsers.league_id
+    LEFT JOIN UserTeams
+           ON UserTeams.league_id = Leagues.id
+          AND UserTeams.user_id = LeagueUsers.user_id
+    WHERE LeagueUsers.user_id = ?
+    ORDER BY Leagues.name
+");
 
     $st->bind_param("i", $userID);
     $st->execute();
@@ -335,6 +353,229 @@ function getProfileInfo($token){
 	return array("returnCode" => "1", "message" => "Profile info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueList);
 }
 
+function getUserIdFromToken($token){
+    global $db;
+    $st = $db->prepare("SELECT user_id FROM Sessions WHERE token = ?");
+    $st->bind_param("s", $token);
+    $st->execute();
+    $row = $st->get_result()->fetch_assoc();
+    $st->close();
+    return $row ? (int)$row['user_id'] : null;
+}
+
+function getOrCreateTeamId($user_id, $league_id){
+    global $db;
+
+    $st = $db->prepare("SELECT 1 FROM LeagueUsers WHERE league_id = ? AND user_id = ?");
+    $st->bind_param("ii", $league_id, $user_id);
+    $st->execute();
+    $member = $st->get_result()->fetch_assoc();
+    $st->close();
+    if(empty($member)){
+        return null;
+    }
+
+    $st = $db->prepare("SELECT id FROM UserTeams WHERE league_id = ? AND user_id = ?");
+    $st->bind_param("ii", $league_id, $user_id);
+    $st->execute();
+    $team = $st->get_result()->fetch_assoc();
+    $st->close();
+    if(!empty($team)){
+        return (int)$team['id'];
+    }
+
+    $st = $db->prepare("SELECT username FROM Users WHERE id = ?");
+    $st->bind_param("i", $user_id);
+    $st->execute();
+    $u = $st->get_result()->fetch_assoc();
+    $st->close();
+    $name = ($u['username'] ?? 'My') . "'s team";
+
+    $st = $db->prepare("INSERT INTO UserTeams (league_id, user_id, name) VALUES (?, ?, ?)");
+    $st->bind_param("iis", $league_id, $user_id, $name);
+    $st->execute();
+    $id = $db->insert_id;
+    $st->close();
+    return (int)$id;
+}
+
+function getTeam($token, $league_id){
+    global $db;
+
+    $user_id = getUserIdFromToken($token);
+    if($user_id === null){
+        return array("returnCode" => "0", "message" => "This session is not valid");
+    }
+
+    $team_id = getOrCreateTeamId($user_id, (int)$league_id);
+    if($team_id === null){
+        return array("returnCode" => "0", "message" => "You are not a member of this league");
+    }
+
+    $st = $db->prepare("SELECT name, currentPoints FROM UserTeams WHERE id = ?");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $team = $st->get_result()->fetch_assoc();
+    $st->close();
+
+    $st = $db->prepare("
+        SELECT Drivers.id, Drivers.givenName, Drivers.familyName
+        FROM TeamDrivers JOIN Drivers ON Drivers.id = TeamDrivers.driver_id
+        WHERE TeamDrivers.team_id = ?
+        ORDER BY Drivers.familyName
+    ");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $drivers = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+    $st->close();
+
+    $st = $db->prepare("
+        SELECT Constructors.id, Constructors.name
+        FROM TeamConstructors JOIN Constructors ON Constructors.id = TeamConstructors.constructor_id
+        WHERE TeamConstructors.team_id = ?
+        ORDER BY Constructors.name
+    ");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $constructors = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+    $st->close();
+
+    $st = $db->prepare("
+        SELECT id, givenName, familyName FROM Drivers
+        WHERE id NOT IN (SELECT driver_id FROM TeamDrivers WHERE team_id = ?)
+        ORDER BY familyName
+    ");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $availableDrivers = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+    $st->close();
+
+    $st = $db->prepare("
+        SELECT id, name FROM Constructors
+        WHERE id NOT IN (SELECT constructor_id FROM TeamConstructors WHERE team_id = ?)
+        ORDER BY name
+    ");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $availableConstructors = $st->get_result()->fetch_all(MYSQLI_ASSOC);
+    $st->close();
+
+    return array(
+        "returnCode" => "1",
+        "message" => "Team retrieved",
+        "team" => $team,
+        "drivers" => $drivers,
+        "constructors" => $constructors,
+        "availableDrivers" => $availableDrivers,
+        "availableConstructors" => $availableConstructors
+    );
+}
+
+function renameTeam($token, $league_id, $name){
+    global $db;
+
+    $user_id = getUserIdFromToken($token);
+    if($user_id === null){
+        return array("returnCode" => "0", "message" => "This session is not valid");
+    }
+
+    $name = trim($name);
+    if($name === '' || strlen($name) > 100){
+        return array("returnCode" => "0", "message" => "Team name must be 1-100 characters");
+    }
+
+    $team_id = getOrCreateTeamId($user_id, (int)$league_id);
+    if($team_id === null){
+        return array("returnCode" => "0", "message" => "You are not a member of this league");
+    }
+
+    $st = $db->prepare("UPDATE UserTeams SET name = ? WHERE id = ?");
+    $st->bind_param("si", $name, $team_id);
+    $st->execute();
+    $st->close();
+
+    return array("returnCode" => "1", "message" => "Team name updated");
+}
+
+function addTeamMember($token, $league_id, $kind, $item_id){
+    global $db;
+
+    if($kind === 'driver'){
+        $table = 'TeamDrivers'; $col = 'driver_id'; $limit = 3;
+    } elseif($kind === 'constructor'){
+        $table = 'TeamConstructors'; $col = 'constructor_id'; $limit = 2;
+    } else {
+        return array("returnCode" => "0", "message" => "Invalid type");
+    }
+
+    $user_id = getUserIdFromToken($token);
+    if($user_id === null){
+        return array("returnCode" => "0", "message" => "This session is not valid");
+    }
+
+    $team_id = getOrCreateTeamId($user_id, (int)$league_id);
+    if($team_id === null){
+        return array("returnCode" => "0", "message" => "You are not a member of this league");
+    }
+
+    $st = $db->prepare("SELECT COUNT(*) AS c FROM $table WHERE team_id = ?");
+    $st->bind_param("i", $team_id);
+    $st->execute();
+    $count = (int)$st->get_result()->fetch_assoc()['c'];
+    $st->close();
+
+    if($count >= $limit){
+        return array("returnCode" => "0", "message" => "Your team is full ($limit {$kind}s max). Remove one first.");
+    }
+
+    try {
+        $st = $db->prepare("INSERT INTO $table (team_id, $col) VALUES (?, ?)");
+        $item = (int)$item_id;
+        $st->bind_param("ii", $team_id, $item);
+        $st->execute();
+        $st->close();
+    } catch (mysqli_sql_exception $e) {
+        return array("returnCode" => "0", "message" => "Could not add that $kind (already on your team, or doesn't exist)");
+    }
+
+    return array("returnCode" => "1", "message" => ucfirst($kind) . " added");
+}
+
+function removeTeamMember($token, $league_id, $kind, $item_id){
+    global $db;
+
+    if($kind === 'driver'){
+        $table = 'TeamDrivers'; $col = 'driver_id';
+    } elseif($kind === 'constructor'){
+        $table = 'TeamConstructors'; $col = 'constructor_id';
+    } else {
+        return array("returnCode" => "0", "message" => "Invalid type");
+    }
+
+    $user_id = getUserIdFromToken($token);
+    if($user_id === null){
+        return array("returnCode" => "0", "message" => "This session is not valid");
+    }
+
+    $team_id = getOrCreateTeamId($user_id, (int)$league_id);
+    if($team_id === null){
+        return array("returnCode" => "0", "message" => "You are not a member of this league");
+    }
+
+    $st = $db->prepare("DELETE FROM $table WHERE team_id = ? AND $col = ?");
+    $item = (int)$item_id;
+    $st->bind_param("ii", $team_id, $item);
+    $st->execute();
+    $removed = $st->affected_rows;
+    $st->close();
+
+    if($removed < 1){
+        return array("returnCode" => "0", "message" => ucfirst($kind) . " wasn't on your team");
+    }
+    return array("returnCode" => "1", "message" => ucfirst($kind) . " removed");
+}
+
+
 function getEval($token, $league_id){
 
 	global $db;
@@ -383,8 +624,8 @@ function getEval($token, $league_id){
 	$st->close();
 	
 	$st = $db->prepare("
-	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM ConstructorStats
-	JOIN Constructors ON Constructors.api_constructor_id = ConstructorStats.api_constructor_id
+	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM constructorStats
+	JOIN Constructors ON Constructors.api_constructor_id = constructorStats.api_constructor_id
 	JOIN TeamConstructors ON Constructors.id = TeamConstructors.constructor_id 
 	JOIN UserTeams ON UserTeams.id = TeamConstructors.team_id
 	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
@@ -441,6 +682,14 @@ function requestProcessor($request)
     	return getMyLeagues($request['token']);
     case "getProfileInfo":
       return getProfileInfo($request['token']);
+    case "getTeam":
+      return getTeam($request['token'], $request['league_id']);
+    case "renameTeam":
+      return renameTeam($request['token'], $request['league_id'], $request['name']);
+    case "addTeamMember":
+      return addTeamMember($request['token'], $request['league_id'], $request['kind'], $request['item_id']);
+    case "removeTeamMember":
+      return removeTeamMember($request['token'], $request['league_id'], $request['kind'], $request['item_id']);
     case "getEval":
       return getEval($request['token'], $request['league_id']);
   }

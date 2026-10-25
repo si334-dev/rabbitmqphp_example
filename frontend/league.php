@@ -31,6 +31,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 	echo "$h";
 	$leagueInfo = $response['leagueInfo'];
 	$leagueMembers = $response['leagueMembers'];
+	$leagueLeaderboard = $response['leagueLeaderboard'];
 } else {
 	setcookie('message', "$message", time() + 60, '/');
 	header('Location: home.php?error=1');
@@ -58,6 +59,14 @@ if (($response['returnCode'] ?? '0') == '1') {
 	}
 	?>
 	
+	<strong> Member Leaderboard: </strong>
+	<?php foreach ($leagueLeaderboard as $member){
+		$username = $member['username'];
+		$points = $member['currentPoints'];
+		echo "<p>$username, Points: $points</p>" . " ";
+	}
+?>
+	<p> </p>
 	<a href="logout.php">Log out</a>
 </body>
 </html>
