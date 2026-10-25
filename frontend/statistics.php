@@ -138,6 +138,7 @@ $lastRace = lastRaceInfo();
 </head>
 
 <body>
+	<?php include ('nav.php'); ?>
 
 	<h2> Last Race: <!-- Race Name here --><?php echo $lastRace['name']; ?> </h2>
 	

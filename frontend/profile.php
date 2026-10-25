@@ -49,7 +49,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 		echo "<a href=$url>$leagueName</a> " . " ";
 	}
 	?>
-	
+	<p> </p>
 	<a href="logout.php">Log out</a>
 </body>
 </html>
