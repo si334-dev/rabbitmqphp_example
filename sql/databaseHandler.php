@@ -561,6 +561,84 @@ function removeTeamMember($token, $league_id, $kind, $item_id){
 }
 
 
+function getEval($token, $league_id){
+
+	global $db;
+
+	$st = $db->prepare("
+	SELECT Users.id, Users.email, Users.username FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+	
+	$st->close();
+
+	$st = $db->prepare("
+	SELECT Drivers.familyName, Drivers.givenName, DriverStats.lastRaceResult, DriverStats.fastestLapRank FROM DriverStats
+	JOIN Drivers ON Drivers.api_driver_id = DriverStats.api_driver_id
+	JOIN TeamDrivers ON Drivers.id = TeamDrivers.driver_id 
+	JOIN UserTeams ON UserTeams.id = TeamDrivers.team_id
+	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
+
+	");	
+		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$drivers = $res->fetch_all(MYSQLI_ASSOC);;
+
+	if(empty($drivers)){
+		return array("returnCode" => "0", "message" => "You have no drivers");
+	}
+	$st->close();
+	
+	$st = $db->prepare("
+	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM constructorStats
+	JOIN Constructors ON Constructors.api_constructor_id = constructorStats.api_constructor_id
+	JOIN TeamConstructors ON Constructors.id = TeamConstructors.constructor_id 
+	JOIN UserTeams ON UserTeams.id = TeamConstructors.team_id
+	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
+
+	");	
+		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$constructors = $res->fetch_all(MYSQLI_ASSOC);
+		
+	if(empty($constructors)){
+		return array("returnCode" => "0", "message" => "You have no constructors");
+	}
+
+	$st->close();
+	$st = $db->prepare("SELECT name, currentPoints FROM UserTeams WHERE league_id = ? AND user_id = ?");
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$teamInfo = $res->fetch_assoc();
+
+	return array("returnCode" => "1", "message" => "Evaluation retrieved", 
+       "teamInfo" => $teamInfo, "drivers" => $drivers, "constructors" => $constructors);
+
+
+}
+
 
 function requestProcessor($request)
 {
@@ -597,6 +675,8 @@ function requestProcessor($request)
       return addTeamMember($request['token'], $request['league_id'], $request['kind'], $request['item_id']);
     case "removeTeamMember":
       return removeTeamMember($request['token'], $request['league_id'], $request['kind'], $request['item_id']);
+    case "getEval":
+      return getEval($request['token'], $request['league_id']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
