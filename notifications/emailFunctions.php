@@ -9,7 +9,7 @@ function getEmailList() {
 	try {
 		$client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
 
-		$response = $client->send_request(['type' => 'get_email_list']);
+		$response = $client->send_request(['type' => 'get_user_emails']);
 
 	} catch (\Exception $e) {
 		return null;
