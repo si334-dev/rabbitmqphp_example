@@ -32,6 +32,8 @@ if (($response['returnCode'] ?? '0') == '1') {
 	$leagueInfo = $response['leagueInfo'];
 	$leagueMembers = $response['leagueMembers'];
 	$leagueLeaderboard = $response['leagueLeaderboard'];
+	$username = $response['userDetails'][1];
+	$lid = $_GET['id'];
 } else {
 	setcookie('message', "$message", time() + 60, '/');
 	header('Location: home.php?error=1');
@@ -43,7 +45,15 @@ if (($response['returnCode'] ?? '0') == '1') {
 <head><title>League Page</title></head>
 <body>
 	<h1> League Page </h1>
-	<?php 
+
+	
+	<?php foreach ($leagueLeaderboard as $user): ?>
+	<?php if ($user['username'] === $username): ?>
+	<a href="eval.php?id=<?= $lid ?>">View Weekly Evaluation</a>
+	<p> </p>
+		<?php endif; ?>
+	<?php endforeach; ?>
+	<?php
 	$name = $leagueInfo['name'];
 	$desc = $leagueInfo['description'];
 	$code_url = "www.sample.com/joinLeagueRequest.php?code=" . $leagueInfo['url_invite_code'];
