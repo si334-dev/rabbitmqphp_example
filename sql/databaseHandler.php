@@ -383,8 +383,8 @@ function getEval($token, $league_id){
 	$st->close();
 	
 	$st = $db->prepare("
-	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM ConstructorStats
-	JOIN Constructors ON Constructors.api_constructor_id = ConstructorStats.api_constructor_id
+	SELECT Constructors.name, constructorStats.combinedDriverPoints FROM constructorStats
+	JOIN Constructors ON Constructors.api_constructor_id = constructorStats.api_constructor_id
 	JOIN TeamConstructors ON Constructors.id = TeamConstructors.constructor_id 
 	JOIN UserTeams ON UserTeams.id = TeamConstructors.team_id
 	WHERE UserTeams.league_id = ? AND UserTeams.user_id = ? 
