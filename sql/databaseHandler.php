@@ -234,7 +234,22 @@ function getLeagueInfo($id, $token){
 	$res = $st->get_result();
         $leagueMembers = $res->fetch_all(MYSQLI_ASSOC);
 
-	return array("returnCode" => "1", "message" => "League info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueInfo, "leagueMembers" => $leagueMembers);
+	$st->close();	
+	$st = $db->prepare("
+	SELECT Users.username, Users.id, UserTeams.currentPoints FROM Users
+	JOIN LeagueUsers 
+	ON Users.id = LeagueUsers.user_id
+	JOIN UserTeams
+	ON LeagueUsers.user_id = UserTeams.user_id
+	WHERE LeagueUsers.league_id = ? AND UserTeams.league_id = ?
+	ORDER BY UserTeams.currentPoints DESC
+		");
+	$st->bind_param("ii", $id, $id);
+	$st->execute();
+	$res = $st->get_result();
+        $leagueLeaderboard = $res->fetch_all(MYSQLI_ASSOC);
+	
+	return array("returnCode" => "1", "message" => "League info got successfully", "userDetails" => $userDetails, "leagueInfo" => $leagueInfo, "leagueMembers" => $leagueMembers, "leagueLeaderboard" => $leagueLeaderboard);
 
 }
 
