@@ -64,17 +64,17 @@
 
 	There will be extra points:<br>
 	If one of your drivers gets the fastest lap <br>
-	Guessing the team with the fastest pit stop <br>
 	
 	Each of the extra instances will award 5 extra points each. <br>
-
+	Each Constructor will earn fantasy points according to this formula (2 * (amount of F1 points the team earned last event))<br>
+<!--
 	<br>
 	For guessing the number of drivers who retired during the race there will be 5 extra points and for guessing the drivers who retired there will be one extra point.
 
 	<br>
 
 	Example: You entered that for the Austing Grand Prix there are 5 DNFs and one of them is Antonelli. And during the race Perez, Stoll, Bottas, Alonso, and Antonelli DNfd then you will be awarded 6 extra points.
-
+-->
 	<h3> Draft </h3>
 	<p> To put together your team you will have $1,000 to spend between teams and drivers. The cost of the teams and the drivers is determined by their position in the drivers' and constructors' current standings.
 
@@ -82,9 +82,10 @@
 
 	<p> Every Monday after a race weekend we will send you a reminder to check your results to see how much points you scored. <br>
 	Also, every Friday of a race week we will send a reminder to review your team and make changes before the races. </p>
-
+<!--
 	<h3> Sprint Weekends </h3>
 	<p> For Sprint weekends we will have a different scoring which will be that the driver who finishes 1st will get 22 points, 2nd: 21, and so on until the 22nd driver will get 1. DNFs will get 0 points.</p>
+-->
 </body>
 
 </html>
