@@ -16,6 +16,8 @@ if ($league_id <= 0) {
     exit();
 }
 
+$ENABLE_TEAM_EDITING = false;
+
 function callBackend($payload){
     try {
         $client = new rabbitMQClient("testRabbitMQ.ini", "testServer");
@@ -25,17 +27,15 @@ function callBackend($payload){
     }
 }
 
-$message = '';
+$message = $_GET['status'] ?? '';
 
-// ---- handle form actions ----
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// ---- handle form actions (shelved) ----
+if ($ENABLE_TEAM_EDITING && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $base = ['token' => $sessionKey, 'league_id' => $league_id];
     $res = null;
 
-    if ($action === 'rename') {
-        $res = callBackend($base + ['type' => 'renameTeam', 'name' => $_POST['name'] ?? '']);
-    } elseif ($action === 'remove') {
+    if ($action === 'remove') {
         $res = callBackend($base + [
             'type' => 'removeTeamMember',
             'kind' => $_POST['kind'] ?? '',
@@ -48,15 +48,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'item_id' => (int)($_POST['item_id'] ?? 0),
         ]);
     } elseif ($action === 'swap') {
-        // swap = remove old, add new (puts the old one back if the add fails)
         $kind = $_POST['kind'] ?? '';
         $old = (int)($_POST['old_id'] ?? 0);
         $new = (int)($_POST['item_id'] ?? 0);
-        $rem = callBackend($base + ['type' => 'removeTeamMember', 'kind' => $kind, 'item_id' => $old]);
+
+        $rem = callBackend($base + [
+            'type' => 'removeTeamMember',
+            'kind' => $kind,
+            'item_id' => $old
+        ]);
+
         if (($rem['returnCode'] ?? '0') == '1') {
-            $res = callBackend($base + ['type' => 'addTeamMember', 'kind' => $kind, 'item_id' => $new]);
+            $res = callBackend($base + [
+                'type' => 'addTeamMember',
+                'kind' => $kind,
+                'item_id' => $new
+            ]);
+
             if (($res['returnCode'] ?? '0') != '1') {
-                callBackend($base + ['type' => 'addTeamMember', 'kind' => $kind, 'item_id' => $old]);
+                callBackend($base + [
+                    'type' => 'addTeamMember',
+                    'kind' => $kind,
+                    'item_id' => $old
+                ]);
             }
         } else {
             $res = $rem;
@@ -66,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = $res['message'] ?? 'Something went wrong, please try again.';
 }
 
-// ---- load team ----
+// ---- load team (one request) ----
 $data = callBackend(['type' => 'getTeam', 'token' => $sessionKey, 'league_id' => $league_id]);
 $ok = ($data['returnCode'] ?? '0') == '1';
 
@@ -100,12 +114,15 @@ $MAX_CONSTRUCTORS = 2;
     <p><?= htmlspecialchars($data['message'] ?? 'Could not load your team.') ?></p>
 <?php } else { ?>
 
-    <h2>Team name</h2>
-    <form method="POST">
-        <input type="hidden" name="action" value="rename">
-        <input type="text" name="name" maxlength="100" value="<?= htmlspecialchars($team['name'] ?? '') ?>">
-        <button type="submit">Rename</button>
-    </form>
+
+<h2>Team name</h2>
+<form method="POST" action="renameTeamRequest.php">
+    <input type="hidden" name="league_id" value="<?= (int)$league_id ?>">
+    <input type="text" name="name" maxlength="100" required
+           value="<?= htmlspecialchars($team['name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+    <button type="submit">Rename</button>
+</form>
+
     <p>Points: <?= (int)($team['currentPoints'] ?? 0) ?></p>
 
     <h2>Drivers (<?= count($drivers) ?>/<?= $MAX_DRIVERS ?>)</h2>
@@ -113,6 +130,7 @@ $MAX_CONSTRUCTORS = 2;
     <?php foreach ($drivers as $d) { ?>
         <li>
             <?= htmlspecialchars($d['givenName'] . ' ' . $d['familyName']) ?>
+            <?php if ($ENABLE_TEAM_EDITING) { ?>
             <form method="POST" style="display:inline">
                 <input type="hidden" name="action" value="remove">
                 <input type="hidden" name="kind" value="driver">
@@ -130,12 +148,13 @@ $MAX_CONSTRUCTORS = 2;
                 </select>
                 <button type="submit">Swap</button>
             </form>
+            <?php } ?>
         </li>
     <?php } ?>
     <?php if (empty($drivers)) { ?><li>No drivers yet.</li><?php } ?>
     </ul>
 
-    <?php if (count($drivers) < $MAX_DRIVERS) { ?>
+    <?php if ($ENABLE_TEAM_EDITING && count($drivers) < $MAX_DRIVERS) { ?>
     <form method="POST">
         <input type="hidden" name="action" value="add">
         <input type="hidden" name="kind" value="driver">
@@ -153,6 +172,7 @@ $MAX_CONSTRUCTORS = 2;
     <?php foreach ($constructors as $c) { ?>
         <li>
             <?= htmlspecialchars($c['name']) ?>
+            <?php if ($ENABLE_TEAM_EDITING) { ?>
             <form method="POST" style="display:inline">
                 <input type="hidden" name="action" value="remove">
                 <input type="hidden" name="kind" value="constructor">
@@ -170,12 +190,13 @@ $MAX_CONSTRUCTORS = 2;
                 </select>
                 <button type="submit">Swap</button>
             </form>
+            <?php } ?>
         </li>
     <?php } ?>
     <?php if (empty($constructors)) { ?><li>No constructors yet.</li><?php } ?>
     </ul>
 
-    <?php if (count($constructors) < $MAX_CONSTRUCTORS) { ?>
+    <?php if ($ENABLE_TEAM_EDITING && count($constructors) < $MAX_CONSTRUCTORS) { ?>
     <form method="POST">
         <input type="hidden" name="action" value="add">
         <input type="hidden" name="kind" value="constructor">
