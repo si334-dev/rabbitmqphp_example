@@ -10,7 +10,7 @@ displaySessionMessage();
 	<h2>Create League</h2>
 	<form method="POST" action="createLeagueRequest.php">
 		<input type="text" name="LeagueName" placeholder="Your League Name" maxlength=50 required><br>
-		<input type="text" name="Description" placeholder="Your League Description" maxlength=200 required><br>
+		<input type="text" name="Description" placeholder="Your League Description" maxlength=200  style="width: 500px; height: 40px;" required><br>
 		<button type="submit">Create League</button>
 	</form>
 	<?php if (isset($_GET['error'])): ?>
