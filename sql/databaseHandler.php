@@ -654,6 +654,35 @@ function getEval($token, $league_id){
 
 }
 
+function getDraftInfo($token){
+	global $db;
+
+	$user_id = getUserIfFromToken($token);
+	if($user_id === null){
+		return array("retunrCode" => "0", "message" => "This session is not valid");
+	}
+
+	$resultD = $db->query("
+		SELECT Drivers.id, Drivers.giveName, Drivers.familyName, DriverStats.currentDraftPower AS power
+		FROM Drivers
+		LEFT JOIN DriverStats ON DriverStats.api_driver_id = Driver.api_driver_id
+		ORDER BY power DESC, Drivers.familyName
+	");
+
+	$drivers = $resultD->fetch_all(MYSQLI_ASSOC);
+
+	$resultC = $db->query("
+		SELECT Constructors.id, Constructors.name, constructorStats.currentDraftPower AS power
+		FROM Constructors
+		LEFT JOIN constructorStats ON constructorStats.api_constructor_id = Constructors.api_constructor_id
+		ORDER BY power DESC, Constructors.name
+	");
+	
+	$constructors = $resultC->fetch_all(MYSQLI_ASSOC);
+
+	return array("returnCode" => "1", "message" => "Draft data complete", "drivers" => $drivers, "constructors" => $constructors);
+}
+
 function draftTeam($token, $league_id, $drivers, $constructors){
 
 	//This is the function I made to draft a team. It requires a session token to verify user creds, a league_id so you know what 
@@ -817,6 +846,8 @@ function requestProcessor($request)
       return getEval($request['token'], $request['league_id']);
     case "draftTeam":
       return draftTeam($request['token'], $request['league_id'], $request['drivers'], $request['constructors']);
+    case "getDraftInfo":
+      return getDraftInfo($request['token']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
