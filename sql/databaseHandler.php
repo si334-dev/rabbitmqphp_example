@@ -657,15 +657,15 @@ function getEval($token, $league_id){
 function getDraftInfo($token){
 	global $db;
 
-	$user_id = getUserIfFromToken($token);
+	$user_id = getUserIdFromToken($token);
 	if($user_id === null){
-		return array("retunrCode" => "0", "message" => "This session is not valid");
+		return array("returnCode" => "0", "message" => "This session is not valid");
 	}
 
 	$resultD = $db->query("
-		SELECT Drivers.id, Drivers.giveName, Drivers.familyName, DriverStats.currentDraftPower AS power
+		SELECT Drivers.id, Drivers.givenName, Drivers.familyName, DriverStats.currentDraftPower AS power
 		FROM Drivers
-		LEFT JOIN DriverStats ON DriverStats.api_driver_id = Driver.api_driver_id
+		LEFT JOIN DriverStats ON DriverStats.api_driver_id = Drivers.api_driver_id
 		ORDER BY power DESC, Drivers.familyName
 	");
 
