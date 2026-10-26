@@ -654,6 +654,129 @@ function getEval($token, $league_id){
 
 }
 
+function draftTeam($token, $league_id, $drivers, $constructors){
+
+	//This is the function I made to draft a team. It requires a session token to verify user creds, a league_id so you know what 
+	//league they are drafting for, a list of driver api ids to add, and a list of constructor api ids to add
+	//These would be sent from the frontend. Most like make the draft page accept a GET to store the kleague id in the url
+	//This page would only be accessible from the league page.	
+	global $db;
+	
+	$st = $db->prepare("
+	SELECT Users.id, Users.email, Users.username FROM Users
+	JOIN Sessions
+	ON Users.id = Sessions.user_id
+	WHERE Sessions.token = ?
+
+	");	
+		
+	$st->bind_param("s", $token);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchUserDetails = $res->fetch_assoc();
+
+
+	if(empty($fetchUserDetails)){
+		return array("returnCode" => "0", "message" => "This session is not valid");
+	}
+	
+	
+	$userDetails = [$fetchUserDetails['id'], $fetchUserDetails['username'], $fetchUserDetails['email']];
+	$user_id = $userDetails[0];
+	$username = $userDetails[1];
+	
+	$st->close();
+	
+	
+	$st = $db->prepare("
+	SELECT * FROM LeagueUsers WHERE league_id = ? AND user_id = ?
+	");	
+		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$fetch = $res->fetch_assoc();
+	
+	
+	if(empty($fetch)){
+		return array("returnCode" => "0", "message" => "User is not in this league");
+	}
+
+
+	//FOR NOW THERE IS NO CHECKS. later will add way to check if its friday-Monday and not allow drafting during this time and 
+	//add a way to disallow drafting multiple times a week. Most likly will add hasDrafted column to team database later
+	
+	$st = $db->prepare("
+	SELECT id FROM UserTeams WHERE league_id = ? AND user_id = ?
+	");	
+		
+	$st->bind_param("ii", $league_id, $user_id);
+	$st->execute();
+	$res = $st->get_result();
+	$fetchTeamID = $res->fetch_assoc();
+
+	if(empty($fetchTeamID)){
+				
+		$st = $db->prepare("
+		INSERT INTO UserTeams (league_id, user_id, name) VALUES (?, ?, ?)
+		");		
+		$name = "$username's team";
+		$st->bind_param("iis", $league_id, $user_id, "default team name");
+		$st->execute();
+		$fetchTeamID['id'] = $db->insert_id;
+	}
+
+	$team_id = $fetchTeamID['id'];
+	//DELECT players they already drafted
+	$st = $db->prepare("
+	DELETE FROM TeamDrivers WHERE team_id = ? 
+	");	
+		
+	$st->bind_param("i", $team_id);
+	$st->execute();
+
+	$st = $db->prepare("
+	DELETE FROM TeamConstructors WHERE team_id = ? 
+	");	
+		
+	$st->bind_param("i", $team_id);
+	$st->execute();
+	
+	foreach($drivers as $api_id){
+		$st = $db->prepare("SELECT id FROM Drivers WHERE api_driver_id = ?");
+		$st->bind_param("s", $api_id);
+		$st->execute();
+		$res = $st->get_result();
+		$fetchDriverID = $res->fetch_assoc();
+		if(empty($fetchDriverID)){	
+			return array("returnCode" => "0", "message" => "An error has occured, Driver does not exsist");
+		}
+		$driver_id = $fetchDriverID['id'];
+
+		$st = $db->prepare("INSERT INTO TeamDrivers (team_id, driver_id) VALUES (?, ?)");
+		$st->bind_param("ii", $team_id, $driver_id);
+		$st->execute();
+	}
+
+	foreach($constructors as $api_id){
+		$st = $db->prepare("SELECT id FROM Constructors WHERE api_constructor_id = ?");
+		$st->bind_param("s", $api_id);
+		$st->execute();
+		$res = $st->get_result();
+		$fetchConID = $res->fetch_assoc();
+		if(empty($fetchConID)){	
+			return array("returnCode" => "0", "message" => "An error has occured, Constructor does not exsist");
+		}
+		$con_id = $fetchConID['id'];
+
+		$st = $db->prepare("INSERT INTO TeamConstructors (team_id, constructor_id) VALUES (?, ?)");
+		$st->bind_param("ii", $team_id, $con_id);
+		$st->execute();
+	}
+
+		return array("returnCode" => "1", "message" => "Success");
+	
+}
 
 function requestProcessor($request)
 {
@@ -692,6 +815,8 @@ function requestProcessor($request)
       return removeTeamMember($request['token'], $request['league_id'], $request['kind'], $request['item_id']);
     case "getEval":
       return getEval($request['token'], $request['league_id']);
+    case "draftTeam":
+      return draftTeam($request['token'], $request['league_id'], $request['drivers'], $request['constructors']);
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
