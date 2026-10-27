@@ -114,7 +114,7 @@ $MAX_CONSTRUCTORS = 2;
     <p><?= htmlspecialchars($data['message'] ?? 'Could not load your team.') ?></p>
 <?php } else { ?>
 
-
+<a href="draft.php?league_id=<?= $league_id ?>">Draft Your Team</a>
 <h2>Team name</h2>
 <form method="POST" action="renameTeamRequest.php">
     <input type="hidden" name="league_id" value="<?= (int)$league_id ?>">

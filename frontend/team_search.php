@@ -60,7 +60,9 @@ foreach ($driverList as $d) {
 <html>
 <head><title>Team Search</title></head>
 <body>
+	<?php include ('nav.php'); ?>
 	<h1> Team Search 2026 </h1>
+
 
 	<form method="GET" action="team_search.php">
 		<input type="text" name="search" placeholder="Search team" value="<?= htmlspecialchars($search) ?>">
