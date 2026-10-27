@@ -48,7 +48,7 @@ function callBackend($payload){
 
 $draftPower = 1000;
 
-$data = callBackend(['type' => 'getDraftInfo', 'token' => $session_key]]);
+$data = callBackend(['type' => 'getDraftInfo', 'token' => $session_key]);
 
 $works = (($data['returnCode'] ?? '0') == '1');
 $drivers =$data['drivers'] ?? [];
