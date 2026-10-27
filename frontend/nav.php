@@ -11,9 +11,7 @@
 	<a href="team_search.php">Teams</a>
 	<a href="statistics.php">Stats</a>
 	<a href="myLeagues.php">Leagues</a>
-	<a href="draft.php">Draft</a>
-	<a href="team_management.php">Manage Team</a>
-	<a href="logout.php">Log out</a>
 	<a href="calendar.php">Calendar</a>
 	<a href="instructions.php">How It Works</a>
+	<a href="logout.php">Log out</a>
 </nav>

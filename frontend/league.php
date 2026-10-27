@@ -27,8 +27,8 @@ try {
 }
 
 if (($response['returnCode'] ?? '0') == '1') {
-	$h = var_dump($response);
-	echo "$h";
+	//$h = var_dump($response);
+	//echo "$h";
 	$leagueInfo = $response['leagueInfo'];
 	$leagueMembers = $response['leagueMembers'];
 	$leagueLeaderboard = $response['leagueLeaderboard'];

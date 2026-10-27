@@ -38,13 +38,11 @@ if ($nextRace) {
 	<?php else: ?>
 		<p>Race info unavailable right now.</p>
 	<?php endif; ?>
-	<h3>My Leagues</h3>
-	<p>Coming soon.</p>
+<!--	<h3>My Leagues</h3>
+	<p>Coming soon.</p> -->
 	<a href="createLeague.php">Create A League</a>
-	<h3>My Team</h3>
-	<p>Coming soon.</p>
 
-	<h3>Last Race Final Results</h3>
-	<p>Coming soon. </p>
+	<!-- <h3>Last Race Final Results</h3>
+	<p>Coming soon. </p> -->
 </body>
 </html>

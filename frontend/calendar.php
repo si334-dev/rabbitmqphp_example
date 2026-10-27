@@ -76,6 +76,7 @@
 </head>
 
 <body>
+	<?php include ('nav.php'); ?>
 
 	<h3> Upcoming Races </h3>
 

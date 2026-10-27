@@ -46,6 +46,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 		$leagueName = $league['name'];
 		$leagueID = $league['id']; 
 		$url = "league.php?id=" . "$leagueID";
+		echo "<br>";
 		echo "<a href=$url>$leagueName</a> " . " ";
 	}
 	?>
