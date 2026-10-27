@@ -38,7 +38,7 @@ $works = (($data['returnCode'] ?? '0') == '1');
 $drivers =$data['drivers'] ?? [];
 $constructors = $data['constructors'] ?? [];
 
-$league_id = ((int)$_GET['league_id'] ?? 0);
+$league_id = (int)($_GET['league_id'] ?? 0);
 if($league_id <= 0){
 	header('Location: myLeagues.php');
 	exit();
@@ -66,7 +66,7 @@ foreach($constructors as $c){
 	$conPower[$c['api_constructor_id']] = $c['power'];
 }
 
-function totalPowerUSe($picked, $powerOf){
+function totalPowerUse($picked, $powerOf){
 	$total= 0;
 
 	foreach($picked as $id){
@@ -80,6 +80,7 @@ $message = ' ';
 
 
 if($works && $_SERVER['REQUEST_METHOD'] === 'POST'){
+	$spent = totalPowerUse($_SESSION[$checkD], $driverPower) + totalPowerUse($_SESSION[$checkC], $conPower);
 	
 	if(isset($_POST['add_driver'])){
 		$id = $_POST['add_driver'];

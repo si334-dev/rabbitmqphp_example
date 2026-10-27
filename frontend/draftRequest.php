@@ -37,7 +37,7 @@ $checkC = 'picked_constructors_' . $league_id;
 $drivers = $_SESSION[$checkD] ?? [];
 $constructors = $_SESSION[$checkC] ?? [];
 
-if(count($drivers != 3) || count($constructors) != 2){
+if(count($drivers) != 3 || count($constructors) != 2){
 	backToDraft('3 Drivers and 2 Teams needed, review your team', $league_id);
 }
 
