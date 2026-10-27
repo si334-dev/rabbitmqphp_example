@@ -152,9 +152,9 @@ $left = $draftPower - $spent;
 
 	<p> Power Used: <?php echo $spent; ?> / <?php echo $left; ?> left </p>
 
-	<form method="post" action"draft.php?league_id=<?php echo $league_id; ?> ">
+	<form method="post" action="draft.php?league_id=<?php echo $league_id; ?>">
 
-	<button type="submit" formaction="draftRequest.php?league_id=<?php echo $league_id; ?> "> Save Team </button>
+	<button type="submit" formaction="draftRequest.php?league_id=<?php echo $league_id; ?>"> Save Team </button>
 
 	<button type="submit" name="clear"> Clear </button>
 

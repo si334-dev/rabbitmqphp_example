@@ -37,7 +37,7 @@ $checkC = 'picked_constructors_' . $league_id;
 $drivers = $_SESSION[$checkD] ?? [];
 $constructors = $_SESSION[$checkC] ?? [];
 
-if(count($drivers != 3 || count($constructors) != 2)){
+if(count($drivers != 3) || count($constructors) != 2){
 	backToDraft('3 Drivers and 2 Teams needed, review your team', $league_id);
 }
 
@@ -46,7 +46,7 @@ if(count(array_unique($drivers)) != count($drivers) || count(array_unique($const
 }
 
 foreach(array_merge($drivers, $constructors) as $rightId){
-	if(!is_string($rightId) || $rightID === ' '){
+	if(!is_string($rightId) || $rightId === ' '){
 		backToDraft('Invalid pick, review your team', $league_id);
 	}
 }
@@ -54,7 +54,7 @@ foreach(array_merge($drivers, $constructors) as $rightId){
 $request = ['type'=> 'draftTeam', 'token' => $session_key, 'league_id' => $league_id, 'drivers' => array_values($drivers), 'constructors' => array_values($constructors)];
 
 try {
-	$client = new rabbitMQCLient('testRabbitMQ.ini', 'testServer');
+	$client = new rabbitMQClient('testRabbitMQ.ini', 'testServer');
 
 	$response = $client->send_request($request);
 } catch (Exception $e){
