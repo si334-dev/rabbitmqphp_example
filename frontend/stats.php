@@ -55,8 +55,8 @@ $need = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'
 		<li>
 		<?= $standing['positionText'] . " " . 
 		$standing['Driver']['givenName'] . " " . 
-		$standing['Driver']['familyName'] . " " . 
-		$standing['Constructors'][0]['name'] . " " . 
+		$standing['Driver']['familyName'] . " <strong> Constructor: </strong>" . 
+		$standing['Constructors'][0]['name'] . "<strong> F1 Points: </strong> " . 
 		$standing['points'];?>
 		</li>
 	<?php } ?>
