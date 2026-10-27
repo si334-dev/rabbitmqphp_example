@@ -663,7 +663,7 @@ function getDraftInfo($token){
 	}
 
 	$resultD = $db->query("
-		SELECT Drivers.id, Drivers.api_driver_id, Drivers.givenName, Drivers.familyName, DriverStats.currentDraftPower AS power
+		SELECT Drivers.id, Drivers.api_driver_id, Drivers.givenName, Drivers.familyName, CASE WHEN Driver.Stats.currentDraftPower IS NULL THEN 0 ELSE DriverStats.currentDraftPower AS power
 		FROM Drivers
 		LEFT JOIN DriverStats ON DriverStats.api_driver_id = Drivers.api_driver_id
 		ORDER BY power DESC, Drivers.familyName
