@@ -663,7 +663,7 @@ function getDraftInfo($token){
 	}
 
 	$resultD = $db->query("
-		SELECT Drivers.id, Drivers.givenName, Drivers.familyName, DriverStats.currentDraftPower AS power
+		SELECT Drivers.id, Drivers.api_drivers_id, Drivers.givenName, Drivers.familyName, DriverStats.currentDraftPower AS power
 		FROM Drivers
 		LEFT JOIN DriverStats ON DriverStats.api_driver_id = Drivers.api_driver_id
 		ORDER BY power DESC, Drivers.familyName
@@ -672,7 +672,7 @@ function getDraftInfo($token){
 	$drivers = $resultD->fetch_all(MYSQLI_ASSOC);
 
 	$resultC = $db->query("
-		SELECT Constructors.id, Constructors.name, constructorStats.currentDraftPower AS power
+		SELECT Constructors.id, Constructors.api_constructor_id, Constructors.name, constructorStats.currentDraftPower AS power
 		FROM Constructors
 		LEFT JOIN constructorStats ON constructorStats.api_constructor_id = Constructors.api_constructor_id
 		ORDER BY power DESC, Constructors.name

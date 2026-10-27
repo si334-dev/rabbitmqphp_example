@@ -5,6 +5,13 @@ require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('session.php');
 
+$session_key = $_COOKIE['session_key'] ?? ' ';
+if($session_key === ' '){
+	header('Location: login.php');
+	exit();
+}
+
+
 /* query database for draft power (driver stats and contructor stats)(combine with driver)
  * get the info from the database and display on the page
  * 
@@ -28,7 +35,6 @@ require_once('session.php');
  * make function in database handler to get the info to request drivers, and then the part to send the information to rabbit. and display information mixed with draft power. 
  */
 
-$user = requireLogin();
 
 function callBackend($payload){
 
@@ -42,7 +48,7 @@ function callBackend($payload){
 
 $draftPower = 1000;
 
-$data = callBackend(['type' => 'getDraftInfo', 'token' => $user['session_key']]);
+$data = callBackend(['type' => 'getDraftInfo', 'token' => $session_key]]);
 
 $works = (($data['returnCode'] ?? '0') == '1');
 $drivers =$data['drivers'] ?? [];
