@@ -184,7 +184,7 @@ $left = $draftPower - $spent;
                 <tr>
                         <td> <?php echo htmlspecialchars($c['name']) ?></td>
 			<td> <?php echo $c['power'];?> </td>
-			<td> <?php if(in_array($id, $_SESSION[checkC])){ ?>
+			<td> <?php if(in_array($id, $_SESSION[$checkC])){ ?>
 				<b> Selected </b>
 				<?php } elseif ($c['power'] > $left) { ?>
 			       Too Expensive
