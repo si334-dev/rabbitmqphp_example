@@ -715,6 +715,12 @@ function draftTeam($token, $league_id, $drivers, $constructors){
 	$username = $userDetails[1];
 	
 	$st->close();
+	date_default_timezone_set('America/New_York');
+	$day = date('N');
+	// THIS CHEKCK only allows drafts on tuesday, wednesday, and thursday. If something breaks comment this out
+	if($day < 2 || $day > 4){
+		return array("returnCode" => "0", "message" => "You can only draft on tuesday, wednesday, and thursday");
+	}
 	
 	
 	$st = $db->prepare("
@@ -732,8 +738,7 @@ function draftTeam($token, $league_id, $drivers, $constructors){
 	}
 
 
-	//FOR NOW THERE IS NO CHECKS. later will add way to check if its friday-Monday and not allow drafting during this time and 
-	//add a way to disallow drafting multiple times a week. Most likly will add hasDrafted column to team database later
+	//I Added the simple day check before
 	
 	$st = $db->prepare("
 	SELECT id FROM UserTeams WHERE league_id = ? AND user_id = ?
