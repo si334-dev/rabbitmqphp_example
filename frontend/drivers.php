@@ -53,11 +53,17 @@ $need = $data['MRData']['DriverTable']['Drivers'];
 	<ul>
 	<?php foreach ($need as $driver){ ?>
 		<li>
-		<?=  
-		$driver['givenName'] . " " . 
-		$driver['familyName'] . " " . 
-		$driver['dateOfBirth'] . " " . 
-		$driver['nationality'];?>
+	<?php
+		$gname = $driver['givenName']; 
+		$fname = $driver['familyName'];
+		$DOB = $driver['dateOfBirth']; 
+		$nat = $driver['nationality'];
+		echo "$gname " . "$fname ";
+		if(!empty($DOB) && !empty($nat)){
+		echo "<strong> Date Of Birth: </strong> $DOB" . "<strong> Nationality: </strong> $nat";
+		}
+
+	?>
 		</li>
 	<?php } ?>
 
