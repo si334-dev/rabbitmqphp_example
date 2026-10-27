@@ -41,7 +41,7 @@ function updateDraftPowerStats(){
 		$currentPlacement = $standing['positionText'];
 		$currentPoints = $standing['points'];
 		$percentage = $standing['points'] / $totalPoints;
-		$power = round($percentage * 3500);
+		$power = round($percentage * 3000);
 
 
 		$st = $db->prepare("
@@ -69,7 +69,7 @@ function updateDraftPowerStats(){
 		$percentage = $standing['points'] / $totalPoints;
 		$currentPlacement = $standing['positionText'];
 		$currentPoints = $standing['points'];
-		$power = round($percentage * 2500);
+		$power = round($percentage * 2000);
 
 
 		$st = $db->prepare("	
