@@ -1,7 +1,7 @@
 <?php
 
 require_once('session.php');
-$user = requireLogin();
+//$user = requireLogin();
 
 require_once(__DIR__ . '/../notifications/emailFunctions.php');
 

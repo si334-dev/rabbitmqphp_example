@@ -812,6 +812,19 @@ function draftTeam($token, $league_id, $drivers, $constructors){
 	
 }
 
+function getEmails(){
+
+	global $db;
+
+	$tempEmails = $db->query("
+		SELECT email FROM Users
+		JOIN UserTeams ON Users.id = UserTeams.user_id
+		");
+	
+	$emails = $tempEmails->fetch_all(MYSQLI_ASSOC);
+	return array("returnCode" => "1", "message" => "retrieved", "users" => $emails);
+}
+
 function requestProcessor($request)
 {
   echo "received request".PHP_EOL;
@@ -853,6 +866,8 @@ function requestProcessor($request)
       return draftTeam($request['token'], $request['league_id'], $request['drivers'], $request['constructors']);
     case "getDraftInfo":
       return getDraftInfo($request['token']);
+    case "get_user_emails":
+      return getEmails();
   }
 
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
