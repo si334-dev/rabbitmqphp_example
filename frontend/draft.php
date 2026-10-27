@@ -104,7 +104,7 @@ if($works && $_SERVER['REQUEST_METHOD'] === 'POST'){
 			$message = "Constructor doesn't exist";
 		} elseif (in_array($id, $_SESSION[$checkC])){
 			$message = 'Constructor already selected';
-		} elseif (count($_SESSION[$checkC] >= 2)){
+		} elseif (count($_SESSION[$checkC]) >= 2){
 			$message = "Constructor limit reached. Clear to start over or move forward";
 		} elseif ($spent + $conPower[$id] > $draftPower){
 			$message = "You can't afford that team";
