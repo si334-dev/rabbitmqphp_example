@@ -115,7 +115,7 @@ if($works && $_SERVER['REQUEST_METHOD'] === 'POST'){
 	}
 	
 	if(isset($_POST['clear'])){
-		$_SESSION[$ckeckD] = [];
+		$_SESSION[$checkD] = [];
 		$_SESSION[$checkC] = [];
 	}
 }
