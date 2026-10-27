@@ -51,10 +51,11 @@ if (($response['returnCode'] ?? '0') == '1') {
 	<?php if ($user['username'] === $username): ?>
 	<a href="eval.php?id=<?= $lid ?>">View Weekly Evaluation</a>
 	<p> </p>
-	<a href="team_management.php?league_id=<?php echo urlencode($lid); ?>">Manage Team</a>
-	<p></p>
+	
 		<?php endif; ?>
 	<?php endforeach; ?>
+	<a href="team_management.php?league_id=<?php echo urlencode($lid); ?>">Manage Team</a>
+	<br>
 	<?php
 	$name = $leagueInfo['name'];
 	$desc = $leagueInfo['description'];
