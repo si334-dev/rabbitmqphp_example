@@ -13,6 +13,11 @@ if($session_key === ' '){
 	exit();
 }
 
+$minimessage = ' ';
+if(isset($_COOKIE['message']) && $_COOKIE['message'] !== ' '){
+	$minimessage = $_COOKIE['message'];
+	setcookie('message', ' ', time() - 3600, '/');
+}
 
 function callBackend($payload){
 
@@ -135,6 +140,10 @@ $left = $draftPower - $spent;
 
 	<?php if($message !== ' '){ ?>
 	<p> <?php echo htmlspecialchars($message); ?> </p>
+	<?php } ?>
+
+	<?php if($minimessage !== ' '){ ?>
+		<p> <?php echo htmlspecialchars($minimessage); ?> </p>
 	<?php } ?>
 
         <?php if(!$works){ ?>
