@@ -119,6 +119,7 @@ $totalConstructorPoints = 0;
 		if((int)$lapRank === 1){
 			echo "<p> This racer got the fastest Lap, +5 points</p>"; 
 			$driverPoints += 5;
+			$totalDriverPoints += 5;
 		}
 		echo "<p>+$driverPoints Points</p>";
 	}
