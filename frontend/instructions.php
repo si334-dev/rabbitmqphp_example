@@ -37,6 +37,7 @@
 </head>
 
 <body>
+<?php include ('nav.php'); ?>
 
 	<h1> How To Play </h1>
 			
