@@ -14,5 +14,5 @@ sudo ufw default allow outgoing
 
 sudo ufw enable
 
-sudo ufw stats verbose
+sudo ufw status verbose
 
