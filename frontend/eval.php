@@ -27,6 +27,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 	$constructors = $response['constructors'];
 	$teamName = $teamInfo['name'];
 	$teamPoints = $teamInfo['currentPoints'];
+	$league_id = $_GET['id'];
 } else {
 	$message = $response['message'];
 	$id = $_GET['id'];
@@ -101,6 +102,7 @@ $totalConstructorPoints = 0;
 <head><title>Evaluation</title></head>
 <body>
 	<?php include ('nav.php'); ?>
+	<p><a href="league.php?id=<?= $league_id ?>">&larr; Back to League</a></p>
 	<h1> Your Team Evaluation </h1>
 	<?php 
 
