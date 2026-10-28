@@ -58,7 +58,8 @@ $need = $data['MRData']['DriverTable']['Drivers'];
 		$fname = $driver['familyName'];
 		$DOB = $driver['dateOfBirth']; 
 		$nat = $driver['nationality'];
-		echo "$gname " . "$fname ";
+		$id = urlencode($driver['driverId']);
+		echo "<a href=\"driver.php?id=$id\">" . htmlspecialchars("$gname $fname") . "</a> ";
 		if(!empty($DOB) && !empty($nat)){
 		echo "<strong> Date Of Birth: </strong> $DOB" . "<strong> Nationality: </strong> $nat";
 		}

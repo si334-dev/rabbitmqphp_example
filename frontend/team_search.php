@@ -51,7 +51,9 @@ $driverList = $driverData['MRData']['StandingsTable']['StandingsLists'][0]['Driv
 $teamDrivers = [];
 foreach ($driverList as $d) {
 	foreach ($d['Constructors'] as $c) {
-		$teamDrivers[$c['constructorId']][] = $d['Driver']['givenName'] . " " . $d['Driver']['familyName'];
+		$link = 'driver.php?id=' . urlencode($d['Driver']['driverId']);
+		$name = htmlspecialchars($d['Driver']['givenName'] . ' ' . $d['Driver']['familyName']);
+		$teamDrivers[$c['constructorId']][] = "<a href='$link'>$name</a>";
 	}
 }
 
@@ -62,7 +64,7 @@ foreach ($driverList as $d) {
 <body>
 	<?php include ('nav.php'); ?>
 	<h1> Team Search 2026 </h1>
-
+`
 
 	<form method="GET" action="team_search.php">
 		<input type="text" name="search" placeholder="Search team" value="<?= htmlspecialchars($search) ?>">
@@ -80,7 +82,7 @@ foreach ($driverList as $d) {
 		$id = $constructor['constructorId'];
 	?>
 		<li>
-		<strong><?= $constructor['name'] ?></strong>
+		<strong><a href="constructor.php?id=<?= urlencode($id) ?>"><?= htmlspecialchars($constructor['name']) ?></a></strong>
 		<br>
 		Nationality: <?= $constructor['nationality'] ?>
 		<br>

@@ -53,11 +53,11 @@ $need = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'
 	<ul>
 	<?php foreach ($need as $standing){ ?>
 		<li>
-		<?= $standing['positionText'] . " " . 
-		$standing['Driver']['givenName'] . " " . 
-		$standing['Driver']['familyName'] . " <strong> Constructor: </strong>" . 
-		$standing['Constructors'][0]['name'] . "<strong> F1 Points: </strong> " . 
-		$standing['points'];?>
+		<?= $standing['positionText'] ?>
+		<a href="driver.php?id=<?= urlencode($standing['Driver']['driverId']) ?>"><?= htmlspecialchars($standing['Driver']['givenName'] . " "  . $standing['Driver']['familyName']) ?></a>
+		<strong> Constructor: </strong>
+		<a href="constructor.php?id=<?= urlencode($standing['Constructors'][0]['constructorId']) ?>"><?= htmlspecialchars($standing['Constructors'][0]['name']) ?></a>
+		<strong> F1 Points: </strong> <?= $standing['points'] ?>
 		</li>
 	<?php } ?>
 
