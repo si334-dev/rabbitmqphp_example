@@ -25,10 +25,10 @@ function getJson($url){
 
 
 
-function updateDraftPowerStats(){
+function updateDraftPowerStats($dataDrivers, $dataConstructors){
 	global $db;
-	$data = getJson("http://api.jolpi.ca/ergast/f1/current/driverstandings/?limit=100");
-	$fullStandings = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'];
+	//$data = getJson("http://api.jolpi.ca/ergast/f1/current/driverstandings/?limit=100");
+	$fullStandings = $dataDrivers['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'];
 	$totalPoints = 0;
 
 	foreach ($fullStandings as $standing){ 
@@ -55,15 +55,15 @@ function updateDraftPowerStats(){
 	}
 
 	
-	$data = getJson("http://api.jolpi.ca/ergast/f1/current/constructorstandings/?limit=100");
-	$fullStandings = $data['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'];
+	//$data = getJson("http://api.jolpi.ca/ergast/f1/current/constructorstandings/?limit=100");
+	$fullStandings2 = $dataConstructors['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'];
 	$totalPoints = 0;
 	
-	foreach ($fullStandings as $standing){ 
+	foreach ($fullStandings2 as $standing){ 
 		$totalPoints += $standing['points'];
 	}
 
-	foreach ($fullStandings as $standing){ 
+	foreach ($fullStandings2 as $standing){ 
 		
 		$id = $standing['Constructor']['constructorId'];
 		$percentage = $standing['points'] / $totalPoints;
@@ -87,11 +87,11 @@ function updateDraftPowerStats(){
 
 }
 
-function populateResultStats(){
+function populateResultStats($dataResults){
 
 	global $db;
-	$data = getJson("http://api.jolpi.ca/ergast/f1/2026/last/results/?limit=100");
-	$lastRace = $data['MRData']['RaceTable']['Races'][0];
+	//$data = getJson("http://api.jolpi.ca/ergast/f1/2026/last/results/?limit=100");
+	$lastRace = $dataResults['MRData']['RaceTable']['Races'][0];
 	$info = ['name' => $lastRace['raceName'], 'date' => $lastRace['date'], 'podium' => [], 'fastest' => null];
 	$combinedPoints = [];
 
