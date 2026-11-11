@@ -17,8 +17,9 @@ function getJson($url){
 }
 
 
-$data = getJson("http://api.jolpi.ca/ergast/f1/2026/drivers/?limit=100");
+//$data = getJson("http://api.jolpi.ca/ergast/f1/2026/drivers/?limit=100");
 //print_r($data);
+function doPopulate($data, $data2){
 $need = $data['MRData']['DriverTable']['Drivers'];
 
 foreach($need as $driver){
@@ -40,8 +41,8 @@ $st->execute();
 }
 
 
-$data = getJson("https://api.jolpi.ca/ergast/f1/current/constructorstandings/");
-$need = $data['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'] ?? [];
+//$data = getJson("https://api.jolpi.ca/ergast/f1/current/constructorstandings/");
+$need = $data2['MRData']['StandingsTable']['StandingsLists'][0]['ConstructorStandings'] ?? [];
 //print_r($data);
 foreach($need as $standing){
 	
@@ -60,6 +61,7 @@ $st->bind_param("ssss", $id, $wiki, $name, $nat);
 $st->execute();
 
 
+}
 }
 
 echo "successfuly populated database";

@@ -4,6 +4,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('evaluate_league_points.php');
+require_once('populateDriversAndConstructors.php');
 
 function doEval($drivers, $constructors, $results)
 {
@@ -11,6 +12,10 @@ function doEval($drivers, $constructors, $results)
 	populateResultStats($results);
 	evalPoints();
     return true;
+}
+
+function doPop($drivers, $constructors){
+	doPopulate($drivers, $constructors);
 }
 
 function requestProcessor($request)
@@ -25,6 +30,8 @@ function requestProcessor($request)
   {
     case "doEval":
       return doEval($request['drivers'],$request['constructors'], $request['results']);
+    case "doPop":
+      return doPop($request['drivers'],$request['constructors']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
