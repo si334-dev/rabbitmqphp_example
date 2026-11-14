@@ -1,0 +1,9 @@
+{
+"bundleName": "exmaple",
+"commmands": ["apt install example", "systemctl restart example"],
+"filesToCopy": [{"source":"file/from/here","destination":"file/on/there" }, {"source":"file/from/here","destination":"file/on/there"}],
+"targetMachine": "rabbit",
+"description":"optional explanation",
+"version":"might not use idk"
+
+}
