@@ -42,7 +42,7 @@ if($zip -> open($tmpZip, ZipArchive::CREATE ) === TRUE) {
     $zip ->close();
 }
 
-$rabbit_ip = parse_ini_file("./rabbitStuff/testRabbitMQ.ini", true)["testServer"]["BROKER_HOST"];
+$rabbit_ip = parse_ini_file("../rabbitStuff/testRabbitMQ.ini", true)["testServer"]["BROKER_HOST"];
 
 $scp = ssh2_connect("$rabbit_ip", 22);
 if(!$scp){ die("failed to copy to remote");}
