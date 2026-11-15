@@ -60,7 +60,12 @@ function recieveDeployment($fileName, $bundleInfo)
 		}
 	$prevName = "/home/vboxuser/bundles/$fileName";
 	$newName = "/home/vboxuser/bundles/$bundleName" . "$ver" . ".zip";
-	if(!rename($prevName, $newName)){echo "file naming failed";}
+	if(!rename($prevName, $newName))
+	{echo "file naming failed";
+	}else{
+	unlink($prevName);
+	}
+
 	
 		
 	return array("returnCode" => "1", "message" => "retrieved");
