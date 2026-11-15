@@ -59,6 +59,7 @@ $request['bundle'] = $bundleFile . ".zip";
 $request['machine'] = $machine;
 $request['cluster'] = $cluster;
 $request['version'] = $ver;
+$request ['name'] = $bundle;
 
 $response = $client->send_request($request);
 //$response = $client->publish($request);

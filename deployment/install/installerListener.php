@@ -13,7 +13,7 @@ $cluster =strtoupper($argv[1]); //intended target machine/queue for deployment
 $target = $argv[2];
 $queue = $cluster . $target;
 
-function recieveInstall($bundleFile, $machine, $cluster, $version){
+function recieveInstall($bundleFile, $machine, $cluster, $version, $name){
 	
 	global $queue;
 	global $target;
@@ -51,7 +51,7 @@ function recieveInstall($bundleFile, $machine, $cluster, $version){
 	 return array("returnCode" => '0', 'message'=>"json in directory does not match bundle name or it is missing");
 	}	
 
-	$jsonContents = file_get_contents("/tmp/$bundleName/$bundleName" . $version . ".json");
+	$jsonContents = file_get_contents("/tmp/$bundleName/$name" . ".json");
 	$bundleInfo = json_decode($jsonContents, true);
 	$commands = $bundleInfo["commands"];
 	$filesToCopy = $bundleInfo['filesToCopy'];
@@ -81,7 +81,7 @@ function requestProcessor($request)
   switch ($request['type'])
   {
     case "install":
-      return recieveInstall($request['bundle'], $request['machine'], $request['cluster'], $request['version']);
+      return recieveInstall($request['bundle'], $request['machine'], $request['cluster'], $request['version'], $request['name']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
