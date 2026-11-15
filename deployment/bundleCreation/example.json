@@ -1,8 +1,8 @@
 {
-"bundleName": "example",
+"bundleName": "login",
 "commands": ["apt install example", "systemctl restart example"],
 "filesToCopy": [{"source":"/tmp/test.txt","destination":"/tmp/text.txt" }],
-"targetMachine": "rabbit",
+"targetMachine": "frontend",
 "description":"optional explanation",
 "version":"might not use idk"
 
