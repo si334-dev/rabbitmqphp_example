@@ -4,71 +4,19 @@ require_once('rabbitStuff/path.inc');
 require_once('rabbitStuff/get_host_info.inc');
 require_once('rabbitStuff/rabbitMQLib.inc');
 
-$db = new mysqli('127.0.0.1', "deployUser", "admin", "deploy");
+echo "Command format: command [cluster] [listeningMachine]";
+if($argc < 3 || $argc > 3){
+die("please review script command format");
+}
 
-function recieveDeployment($fileName, $bundleInfo)
-{
-	global $db;
-	echo "$fileName";
-	if(!file_exists("/home/vboxuser/bundles/" . $fileName)){
-	return array("returnCode" => "0", "message" => "file not found on deployment VM");
-	}
-	$bundleName = $bundleInfo['bundleName'];
-	$targetMachine = $bundleInfo['targetMachine'];
+$cluster =strtoupper($argv[1]); //intended target machine/queue for deployment
+$target = $argv[2];
+$queue = $cluster . $target;
 
-	//idk why i didnt add this to database so I'm doing it here instead. checks to see if an exsisting bundle corelates to a 
-	//machine type so a bundle name can only be mapped to one machine type
-	//for example if you have a login bundle it can only be applied to frontenQA or prod not anythign else
-	$st = $db->prepare("SELECT machine FROM Bundles WHERE name = ? LIMIT 1");
-	$st->bind_param("s", $bundleName);
-	$st->execute();
+function recieveInstall($bundleFile, $machine, $cluster){
 
-	$res = $st->get_result();
-	$existingBundle = $res->fetch_assoc();
-	$st->close();
 
-	if (!empty($existingBundle)) {
-
-    	if ($existingBundle['machine'] != $targetMachine) {
-		return array("returnCode" => "0", "message" => "Bundle already exists with a different machine type");	
-	}
-	}
-	//SELECT TO SEE IF BUNDLE EXSISTS, if so update version number to +1 and insert into database + update file name
-	$st = $db->prepare("SELECT * FROM Bundles WHERE name = ? AND machine = ? ORDER BY version DESC LIMIT 1");
-	$st->bind_param("ss", $bundleName, $targetMachine);
-	$st->execute();
-	$res = $st->get_result();
-	$fetchBundles = $res->fetch_assoc();
-	$ver = 0;
-	if(empty($fetchBundles)){
-		$ver = 1;
-		$st = $db->prepare("INSERT INTO Bundles (name, version, machine) VALUES(?, ?, ?)");
-		$st->bind_param("sis", $bundleName, $ver, $targetMachine);
-		if(!$st->execute()){
-		return array("returnCode" => "0", "message" => "insert failed");
-		}
-
-	}else{
-		$currentVer = $fetchBundles["version"];
-		$ver = $currentVer + 1;
-		$st = $db->prepare("INSERT INTO Bundles (name, version, machine) VALUES(?, ?, ?)");
-		$st->bind_param("sis", $bundleName, $ver, $targetMachine);
-		if(!$st->execute()){
-		return array("returnCode" => "0", "message" => "insert failed");
-		}
-
-		}
-	$prevName = "/home/vboxuser/bundles/$fileName";
-	$newName = "/home/vboxuser/bundles/$bundleName" . "$ver" . ".zip";
-	if(!rename($prevName, $newName))
-	{echo "file naming failed";
-	}else{
-	unlink($prevName);
-	}
-
-	
-		
-	return array("returnCode" => "1", "message" => "retrieved");
+  return array("returnCode" => '1', 'message'=>"$bundleFile $machine $cluster");
 }
 
 
@@ -82,13 +30,13 @@ function requestProcessor($request)
   }
   switch ($request['type'])
   {
-    case "deploySend":
-      return recieveDeployment($request['tmpName'], $request['bundleInfo']);
+    case "install":
+      return recieveInstall($request['bundle'], $request['machine'], $request['cluster']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }
 
-$server = new rabbitMQServer("testRabbitMQ.ini","testServer");
+$server = new rabbitMQServer("testRabbitMQ.ini",$queue);
 
 echo "testRabbitMQServer BEGIN".PHP_EOL;
 $server->process_requests('requestProcessor');

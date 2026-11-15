@@ -57,6 +57,7 @@ $request = array();
 $request['type'] = "install";
 $request['bundle'] = $bundleFile . ".zip";
 $request['machine'] = $machine;
+$request['cluster'] = $cluster;
 
 $response = $client->send_request($request);
 //$response = $client->publish($request);
