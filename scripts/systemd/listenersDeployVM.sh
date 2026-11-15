@@ -8,7 +8,7 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart=/bin/php /home/vboxuser/git/rabbitmqphp_example/deployment/deployListener.php
+ExecStart=/bin/php /home/vboxuser/rabbitmqphp_example/deployment/deployListener.php
 Restart=on-failure
 RestartSec=5
 
