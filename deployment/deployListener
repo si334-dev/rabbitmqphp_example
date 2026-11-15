@@ -1,8 +1,8 @@
 #!/usr/bin/php
 <?php
-require_once('../rabbitStuff/path.inc');
-require_once('../rabbitStuff/get_host_info.inc');
-require_once('../rabbitStuff/rabbitMQLib.inc');
+require_once('rabbitStuff/path.inc');
+require_once('rabbitStuff/get_host_info.inc');
+require_once('rabbitStuff/rabbitMQLib.inc');
 
 function recieveDeployment($fileName)
 {
