@@ -15,7 +15,24 @@ function recieveDeployment($fileName, $bundleInfo)
 	}
 	$bundleName = $bundleInfo['bundleName'];
 	$targetMachine = $bundleInfo['targetMachine'];
-	
+
+	//idk why i didnt add this to database so I'm doing it here instead. checks to see if an exsisting bundle corelates to a 
+	//machine type so a bundle name can only be mapped to one machine type
+	//for example if you have a login bundle it can only be applied to frontenQA or prod not anythign else
+	$st = $db->prepare("SELECT machine FROM Bundles WHERE name = ? LIMIT 1");
+	$st->bind_param("s", $bundleName);
+	$st->execute();
+
+	$res = $st->get_result();
+	$existingBundle = $res->fetch_assoc();
+	$st->close();
+
+	if (!empty($existingBundle)) {
+
+    	if ($existingBundle['machine'] != $targetMachine) {
+		return array("returnCode" => "0", "message" => "Bundle already exists with a different machine type");	
+	}
+	}
 	//SELECT TO SEE IF BUNDLE EXSISTS, if so update version number to +1 and insert into database + update file name
 	$st = $db->prepare("SELECT * FROM Bundles WHERE name = ? AND machine = ? ORDER BY version DESC LIMIT 1");
 	$st->bind_param("ss", $bundleName, $targetMachine);

@@ -2,7 +2,7 @@
 "bundleName": "example",
 "commands": ["apt install example", "systemctl restart example"],
 "filesToCopy": [{"source":"/tmp/test.txt","destination":"/tmp/text.txt" }],
-"targetMachine": "rabbit",
+"targetMachine": "dmz",
 "description":"optional explanation",
 "version":"might not use idk"
 
