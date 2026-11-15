@@ -14,9 +14,59 @@ $target = $argv[2];
 $queue = $cluster . $target;
 
 function recieveInstall($bundleFile, $machine, $cluster){
+	
+	global $queue;
+	global $target;
 
+	if(!($target === $machine)){
+  	return array("returnCode" => '0', 'message'=>"this is intended for $machine and this is $target");
+	}
 
-  return array("returnCode" => '1', 'message'=>"$bundleFile $machine $cluster");
+	$rabbit_ip = parse_ini_file("./rabbitStuff/testRabbitMQ.ini", true)["$queue"]["BROKER_HOST"];
+
+	$scp = ssh2_connect("$rabbit_ip", 22);
+	if(!$scp){
+  	return array("returnCode" => '0', 'message'=>"Failed to connect to remote");
+	}
+	if(!ssh2_auth_password($scp, 'vboxuser', 'admin')){	
+ 	 return array("returnCode" => '0', 'message'=>"auth failed from machine");
+	}
+	$remote = "bundles/" . $bundleFile;
+	$localtmp = "/tmp/$bundleFile";
+	if(!ssh2_scp_recv($scp, "$remote", "$localtmp")){
+		return array("returnCode" => '0', 'message'=>"failed to copy from remote");
+	}
+
+	if(!file_exists("$localtmp")){
+  		return array("returnCode" => '0', 'message'=>"file doesnt exsist here idk how");
+	}
+	$bundleName = pathinfo($bundleFile, PATHINFO_FILENAME);
+
+	$zip = new ZipArchive;
+	$zip->open("$localtmp");
+	$zip->extractTo("/tmp/$bundleName");
+	$zip->close();
+	
+	if(!file_exists("/tmp/$bundleName/$bundleName" . ".json")){
+	 return array("returnCode" => '0', 'message'=>"json in directory does not match bundle name or it is missing");
+	}	
+
+	$jsonContents = file_get_contents("/tmp/$bundleName/$bundleName" . ".json");
+	$bundleInfo = json_decode($jsonContents, true);
+	$commands = $bundleInfo["commands"];
+	$filesToCopy = $bundleInfo['filesToCopy'];
+
+	foreach($filesToCopy as $file){
+		$src = "/tmp/$bundleName/" .  basename($file['source']);
+		$dest = $file['destination'];
+		copy($src, $dest);
+	}
+
+	foreach($commands as $command){
+	shell_exec($command);
+	}
+
+	return array("returnCode" => '1', 'message'=>"$bundleFile $machine $cluster");
 }
 
 

@@ -10,6 +10,10 @@ $bundleFile = $argv[1]; //get json file name based on what the user enters
 $jsonContents = file_get_contents($bundleFile);
 $bundleInfo = json_decode($jsonContents, true);
 $name = $bundleInfo['bundleName'];
+
+if(!($name . ".json" === $bundleFile)){
+die('bundle file name must match json file name');
+}
 $files = $bundleInfo['filesToCopy'];
 $tmpName = $name.uniqid();
 $tmpD = "/tmp/$tmpName";
