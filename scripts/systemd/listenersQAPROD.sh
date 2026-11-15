@@ -9,7 +9,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-ExecStart=/bin/php /home/vboxuser/git/rabbitmqphp_example/deployment/install/installerListener.php QA rabbit 
+ExecStart=/bin/php /home/vboxuser/git/rabbitmqphp_example/deployment/install/installerListener.php QA rabbit
+WorkingDirectory= /home/vboxuser/git/rabbitmqphp_example/deployment/install 
 Restart=on-failure
 RestartSec=5
 
