@@ -24,13 +24,13 @@ function recieveDeployment($fileName, $bundleInfo)
 	$st->execute();
 
 	$res = $st->get_result();
-	$existingBundle = $res->fetch_assoc();
+	$fetchExistingBundle = $res->fetch_assoc();
 	$st->close();
 
-	if (!empty($existingBundle)) {
+	if (!empty($fetchExistingBundle)) {
 
-    	if ($existingBundle['machine'] != $targetMachine) {
-		return array("returnCode" => "0", "message" => "Bundle already exists with a different machine type");	
+    	if ($fetchExistingBundle['machine'] != $targetMachine) {
+		return array("returnCode" => "0", "message" => "Bundle already exists with a different machine type target");	
 	}
 	}
 	//SELECT TO SEE IF BUNDLE EXSISTS, if so update version number to +1 and insert into database + update file name
