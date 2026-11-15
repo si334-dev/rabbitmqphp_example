@@ -1,2 +1,3 @@
 notifications/mail.ini
 notifications/vendor/
+*.key

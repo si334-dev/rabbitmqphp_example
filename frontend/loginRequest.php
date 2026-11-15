@@ -23,7 +23,13 @@ try {
 }
 
 if (($response['returnCode'] ?? '0') == '1') {
-	setcookie('session_key', $response['session_token'] ?? '', time() + 3600, '/');
+	setcookie('session_key', $response['session_token'] ?? '', [
+		'expires' => time() + 3600,
+		'path' => '/',
+		'secure' => true,
+		'httponly' => true,
+		'samesite' => 'Lax',
+	]);
 	header('Location: home.php');
 } else {
 	header('Location: login.php?error=1');
