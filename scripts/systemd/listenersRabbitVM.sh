@@ -35,7 +35,7 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-chmod 644 /etc/systemd/system/dmzListener.service
+chmod 644 /etc/systemd/system/frontendListener.service
 
 systemctl daemon-reload
 
