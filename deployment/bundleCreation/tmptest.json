@@ -1,7 +1,7 @@
 {
 "bundleName": "tmptest",
 "commands": ["touch /tmp/tester", "touch /tmp/tester2"],
-"filesToCopy": [{"source":"/tmp/test.txt","destination":"/tmp/text.txt" }],
+"filesToCopy": [{"source":"/tmp/test.txt","destination":"/tmp/remote.txt" }],
 "targetMachine": "rabbit",
 "description":"optional explanation",
 "version":"might not use idk"

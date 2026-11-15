@@ -47,7 +47,7 @@ function recieveInstall($bundleFile, $machine, $cluster, $version, $name){
 	$zip->extractTo("/tmp/$bundleName");
 	$zip->close();
 	
-	if(!file_exists("/tmp/$bundleName/$bundleName" . ".json")){
+	if(!file_exists("/tmp/$bundleName/$name" . ".json")){
 	 return array("returnCode" => '0', 'message'=>"json in directory does not match bundle name or it is missing");
 	}	
 
