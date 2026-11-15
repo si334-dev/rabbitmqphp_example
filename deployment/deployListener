@@ -4,7 +4,7 @@ require_once('rabbitStuff/path.inc');
 require_once('rabbitStuff/get_host_info.inc');
 require_once('rabbitStuff/rabbitMQLib.inc');
 
-function recieveDeployment($fileName)
+function recieveDeployment($fileName, $bundleName)
 {
 	echo "$fileName";
 	
@@ -23,7 +23,7 @@ function requestProcessor($request)
   switch ($request['type'])
   {
     case "deploySend":
-      return recieveDeployment($request['tmpName']);
+      return recieveDeployment($request['tmpName'], $request['bundleName']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
 }

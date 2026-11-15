@@ -53,6 +53,7 @@ if(!ssh2_scp_send($scp, "$tmpZip", "$remote")){die('transfer failed lol');}
 $request = array();
 $request['type'] = "deploySend";
 $request['tmpName'] = basename($tmpZip);
+$request['bundleName'] = $name;
 
 $response = $client->send_request($request);
 //$response = $client->publish($request);
