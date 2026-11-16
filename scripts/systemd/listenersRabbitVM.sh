@@ -9,6 +9,7 @@ After=network.target
 Type=simple
 User=root
 ExecStart=/bin/php /home/vboxuser/git/rabbitmqphp_example/sql/dmzStuff/dmzListener.php
+WorkingDirectory= /home/vboxuser/git/rabbitmqphp_example/sql/dmzStuff 
 Restart=on-failure
 RestartSec=5
 
