@@ -1,0 +1,21 @@
+body{
+	background-color: white;
+}
+
+main{
+	padding-top: 1.5rem;
+	padding-bottom: 3rem;
+}
+
+td, th{
+	vertical-align: middle;
+	word-break: break-word;
+}
+
+.table-responsive{
+	background-color: white;
+	border-radius: 0.5rem:
+	box-shadow: 0 1px 3px;
+}
+
+

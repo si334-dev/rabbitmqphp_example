@@ -34,10 +34,12 @@
 <html>
 <head>
 	<title> How To Play </title>
+	<?php include 'header.php'; ?>
 </head>
 
 <body>
 <?php include ('nav.php'); ?>
+<main class="container">
 
 	<h1> How To Play </h1>
 			
@@ -87,6 +89,7 @@
 	<h3> Sprint Weekends </h3>
 	<p> For Sprint weekends we will have a different scoring which will be that the driver who finishes 1st will get 22 points, 2nd: 21, and so on until the 22nd driver will get 1. DNFs will get 0 points.</p>
 -->
+</main>
 </body>
 
 </html>
