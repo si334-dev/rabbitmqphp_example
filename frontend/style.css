@@ -15,7 +15,37 @@ td, th{
 .table-responsive{
 	background-color: white;
 	border-radius: 0.5rem:
-	box-shadow: 0 1px 3px;
 }
+
+@media (max-width: 575px), (max-height: 500px){
+	.navbar{
+		--bs-navbar-padding-y: 0.25em;
+		--bs-navbar-toggler-padding-y: 0.1rem;
+		--bs-navbar-toggler-padding-x: 0.4rem;
+		--bs-navbar-toogler-font-size: 0.9rem;
+	}
+	body{ 
+		font-size: 0.875rem;
+	}
+	h1{
+		font-size: 1.5rem;
+	}
+	h2 {
+		font-size: 1.25rem;
+	}
+	h3{
+		font-size:1.1rem;
+	}
+	.form-control, .btn{
+		font-size: 0.875rem;
+		padding: 0.25rem 0.5rem;
+	}
+
+	main {
+		padding-top: 0.5rem;
+		padding-bottom: 1rem;
+	}
+}
+
 
 
