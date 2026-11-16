@@ -3,19 +3,6 @@
 
 $db = new mysqli('127.0.0.1', "testUser", "admin", "website_data");
 
-function getJson($url){
-	$options = ['http' => ['header' => "User-Agent: test-script\r\n"]];
-	$context = stream_context_create($options);
-
-	$text = @file_get_contents($url, false, $context);
-
-	if($text === false){
-	return null;
-	}
-
-	return json_decode($text, true);
-}
-
 
 //$data = getJson("http://api.jolpi.ca/ergast/f1/2026/drivers/?limit=100");
 //print_r($data);

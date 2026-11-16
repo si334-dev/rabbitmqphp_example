@@ -4,7 +4,7 @@ require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('evaluate_league_points.php');
-require_once('populateDriversAndConstructors.php');
+require_once('../populateDriverAndContructors.php');
 
 function doEval($drivers, $constructors, $results)
 {
