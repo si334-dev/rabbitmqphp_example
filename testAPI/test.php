@@ -58,7 +58,7 @@ if ($name !== ""){
 					}
 				}
 				if(!$gotResult){
-					echo "No driver found for this race/no resutl available";
+					echo "No driver found for this race/no result available";
 				}
 			}
 		}
