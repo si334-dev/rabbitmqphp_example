@@ -17,8 +17,8 @@ async function startLogger() {
         const exchangeName = 'logExchange';
         const queueName = 'logQueue';
 
-        await channel.assertExchange(exchangeName, 'fanout', { durable: false });
-        await channel.assertQueue(queueName, { durable: false });
+        await channel.assertExchange(exchangeName, 'fanout', { durable: true });
+        await channel.assertQueue(queueName, { durable: true });
         await channel.bindQueue(queueName, exchangeName, '');
 
         console.log("Waiting for logs...");
