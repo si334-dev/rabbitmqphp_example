@@ -23,7 +23,7 @@ if ($valid != '1') {
 	header('Location: login.php');
 	exit();
 }
-
+ 
 function getJson($url){
 	$options = ['http' => ['header' => "User-Agent: test-script\r\n"]];
 	$context = stream_context_create($options);
@@ -46,13 +46,14 @@ $need = $data['MRData']['DriverTable']['Drivers'];
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Home</title></head>
+<head><title>Home</title><?php include 'header.php';?></head>
 <body>
 <?php include ('nav.php'); ?>
+<main class="container">
 	<h1> Drivers 2026 </h1>
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach ($need as $driver){ ?>
-		<li>
+		<li class="list-group-item">
 	<?php
 		$gname = $driver['givenName']; 
 		$fname = $driver['familyName'];
@@ -70,5 +71,6 @@ $need = $data['MRData']['DriverTable']['Drivers'];
 
 	</ul>
 	<a href="logout.php">Log out</a>
+</main>
 </body>
 </html>

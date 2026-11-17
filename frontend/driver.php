@@ -2,7 +2,7 @@
 
 require_once('session.php');
 
-$user = requireLogin();
+//$user = requireLogin();
 
 
 if (!function_exists('getJson')) {
@@ -57,10 +57,10 @@ if (preg_match('/^[a-z0-9_]+$/i', $id)) {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Driver</title></head>
+<head><title>Driver</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include('nav.php'); ?>
-
+	<main class="container">
 	<?php if (!$driver): ?>
 		<h2>Driver not found</h2>
 		<p>Go back to <a href="drivers.php">Drivers</a>.</p>
@@ -95,5 +95,6 @@ if (preg_match('/^[a-z0-9_]+$/i', $id)) {
 		<?php endif; ?>
 
 	<?php endif; ?>
+</main>
 </body>
 </html>
