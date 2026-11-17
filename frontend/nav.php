@@ -9,7 +9,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
 
-	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
+	<button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu">
 	<span class="navbar-toggler-icon"></span>
 	</button>
 

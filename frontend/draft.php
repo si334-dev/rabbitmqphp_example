@@ -28,7 +28,7 @@ function callBackend($payload){
                 return null;
         }
 }
-
+ 
 
 $draftPower = 1000;
 
@@ -131,10 +131,12 @@ $left = $draftPower - $spent;
 
 <head>
         <title> Draft </title>
+	<?php include 'header.php'; ?>
 </head>
 
 <body>
 <?php include('nav.php'); ?>
+<main class="container">
 
         <h2> Pick your team </h2>
 	<p> You have 1000 power to create your team, with the 1000 you will choose 3 drivers and 2 teams. </p>
@@ -151,16 +153,18 @@ $left = $draftPower - $spent;
         <p> <?php echo htmlspecialchars($data['message'] ?? "Data couldn't load"); ?> </p>
         <?php } else { ?>
 
-	<p> Power Used: <?php echo $spent; ?> / <?php echo $left; ?> left </p>
+	<p class="fw-bold"> Power Used: <?php echo $spent; ?> / <?php echo $left; ?> left </p>
 
 	<form method="post" action="draft.php?league_id=<?php echo $league_id; ?>">
 
-	<button type="submit" formaction="draftRequest.php?league_id=<?php echo $league_id; ?>"> Save Team </button>
-
-	<button type="submit" name="clear"> Clear </button>
+	<div class="mb-3">
+	  <button class="btn btn-success btn-sm" type="submit" formaction="draftRequest.php?league_id=<?php echo $league_id; ?>"> Save Team </button>
+          <button class="btn btn-outline-secondary btn-sm" type="submit" name="clear"> Clear </button>
+	</div>
 
         <h4>Drivers</h4>
-        <table> 
+	<div class="table-responsive mb-4">
+	<table class="tbale table-stripped table-sm align-middle mb-0"> 
                 <tr><th>Driver</th><th>Draft Power Cost</th> </tr>
 		<?php foreach($drivers as $d) { ?>
 			<?php $id = $d['api_driver_id']; ?>
@@ -171,14 +175,15 @@ $left = $draftPower - $spent;
 				<b> Selected </b>
 				<?php } elseif($d['power'] > $left){ ?>
 					Too Expensive
-				<?php } else{ ?> <button type="submit" name="add_driver" value="<?php echo htmlspecialchars($id); ?>"> Select </button>
+				<?php } else{ ?> <button class="btn btn-primary btn-sm" type="submit" name="add_driver" value="<?php echo htmlspecialchars($id); ?>"> Select </button>
 			     <?php } ?>  </td>
                         </tr>
                 <?php } ?>
         </table>
 
-        <h4>Constructors</h4>
-        <table>
+	<h4>Constructors</h4>
+	<div class="table-responsive mb-4">
+        <table class="table table-stripped table-sm align-middle mb-0">
         <tr><th>Constructor</th><th>Draft Power Cost </th></tr>
 	<?php foreach($constructors as $c) { ?>
 		<?php $id = $c['api_constructor_id']; ?>
@@ -189,7 +194,7 @@ $left = $draftPower - $spent;
 				<b> Selected </b>
 				<?php } elseif ($c['power'] > $left) { ?>
 			       Too Expensive
-			       <?php }else { ?> <button type="submit" name="add_constructor" value="<?php echo htmlspecialchars($id); ?>" > Select </button>
+			       <?php }else { ?> <button class="btn btn-primary btn-sm" type="submit" name="add_constructor" value="<?php echo htmlspecialchars($id); ?>" > Select </button>
 			<?php } ?> </td>	
                 </tr>
         <?php } ?>
