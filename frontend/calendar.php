@@ -20,7 +20,7 @@
 			$valid = '0';
 		}
 	}
-
+ 
 	if ($valid != '1') {
 		header('Location: login.php');
 		exit();
@@ -73,10 +73,12 @@
 
 <head>
 	<title> Calendar</title>
+	<?php include 'header.php' ?>
 </head>
 
 <body>
 	<?php include ('nav.php'); ?>
+	<main class="container">
 
 	<h3> Upcoming Races </h3>
 
@@ -103,7 +105,7 @@
 		echo "<p>" . $race['date'] . " - " . $race['raceName'] . "</p>";
 	}
 	?>
-
+</main>
 </body>
 
 </html>
