@@ -96,18 +96,20 @@ $MAX_CONSTRUCTORS = 2;
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    
     <title>Team Management</title>
+	<?php include 'header.php'; ?>
 </head>
 <body>
 
 <?php include('nav.php'); ?>
+<main class="container">
 
 <h1>Team Management</h1>
 <p><a href="myLeagues.php">&larr; My Leagues</a></p>
 
 <?php if ($message !== '') { ?>
-    <p><strong><?= htmlspecialchars($message) ?></strong></p>
+    <p><?= htmlspecialchars($message) ?></strong></p>
 <?php } ?>
 
 <?php if (!$ok) { ?>
@@ -116,19 +118,19 @@ $MAX_CONSTRUCTORS = 2;
 
 <a href="draft.php?league_id=<?= $league_id ?>">Draft Your Team</a>
 <h2>Team name</h2>
-<form method="POST" action="renameTeamRequest.php">
+<form method="POST" action="renameTeamRequest.php" class="d-flex gap-2 mb-3">
     <input type="hidden" name="league_id" value="<?= (int)$league_id ?>">
-    <input type="text" name="name" maxlength="100" required
+    <input class="form-control" type="text" name="name" maxlength="100" required
            value="<?= htmlspecialchars($team['name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-    <button type="submit">Rename</button>
+    <button class="btn btn-primary" type="submit">Rename</button>
 </form>
 
     <p>Points: <?= (int)($team['currentPoints'] ?? 0) ?></p>
 
     <h2>Drivers (<?= count($drivers) ?>/<?= $MAX_DRIVERS ?>)</h2>
-    <ul>
+    <ul class="list-group mb-3">
     <?php foreach ($drivers as $d) { ?>
-        <li>
+        <li class="list-group-item">
             <?= htmlspecialchars($d['givenName'] . ' ' . $d['familyName']) ?>
             <?php if ($ENABLE_TEAM_EDITING) { ?>
             <form method="POST" style="display:inline">
@@ -151,7 +153,7 @@ $MAX_CONSTRUCTORS = 2;
             <?php } ?>
         </li>
     <?php } ?>
-    <?php if (empty($drivers)) { ?><li>No drivers yet.</li><?php } ?>
+    <?php if (empty($drivers)) { ?><li class="list-group-item">No drivers yet.</li><?php } ?>
     </ul>
 
     <?php if ($ENABLE_TEAM_EDITING && count($drivers) < $MAX_DRIVERS) { ?>
@@ -168,9 +170,9 @@ $MAX_CONSTRUCTORS = 2;
     <?php } ?>
 
     <h2>Constructors (<?= count($constructors) ?>/<?= $MAX_CONSTRUCTORS ?>)</h2>
-    <ul>
+    <ul class="list-group mb-3">
     <?php foreach ($constructors as $c) { ?>
-        <li>
+        <li class="list-group-item">
             <?= htmlspecialchars($c['name']) ?>
             <?php if ($ENABLE_TEAM_EDITING) { ?>
             <form method="POST" style="display:inline">
@@ -193,7 +195,7 @@ $MAX_CONSTRUCTORS = 2;
             <?php } ?>
         </li>
     <?php } ?>
-    <?php if (empty($constructors)) { ?><li>No constructors yet.</li><?php } ?>
+    <?php if (empty($constructors)) { ?><li class="list-group-item">No constructors yet.</li><?php } ?>
     </ul>
 
     <?php if ($ENABLE_TEAM_EDITING && count($constructors) < $MAX_CONSTRUCTORS) { ?>
@@ -211,5 +213,6 @@ $MAX_CONSTRUCTORS = 2;
 
 <?php } ?>
 
+</main>
 </body>
 </html>

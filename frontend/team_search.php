@@ -23,7 +23,7 @@ if ( $valid != '1') {
 	header('Location: login.php');
 	exit();
 }
-
+ 
 function getJson($url){
 	$options = ['http' => ['header' => "User-Agent: test-script\r\n"]];
 	$context = stream_context_create($options);
@@ -60,18 +60,18 @@ foreach ($driverList as $d) {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Team Search</title></head>
+<head><title>Team Search</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include ('nav.php'); ?>
+	<main class="container">
 	<h1> Team Search 2026 </h1>
-`
 
-	<form method="GET" action="team_search.php">
-		<input type="text" name="search" placeholder="Search team" value="<?= htmlspecialchars($search) ?>">
-		<button type="submit">Search</button>
+	<form method="GET" action="team_search.php" class="d-flex gap-2 mb-3">
+		<input class="form-control sm" type="text" name="search" placeholder="Search team" value="<?= htmlspecialchars($search) ?>">
+		<button class="btn btn-primary" type="submit">Search</button>
 	</form>
 
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach ($need as $standing){
 		$constructor = $standing['Constructor'];
 
@@ -81,7 +81,7 @@ foreach ($driverList as $d) {
 		}
 		$id = $constructor['constructorId'];
 	?>
-		<li>
+		<li class="list-group-item">
 		<strong><a href="constructor.php?id=<?= urlencode($id) ?>"><?= htmlspecialchars($constructor['name']) ?></a></strong>
 		<br>
 		Nationality: <?= $constructor['nationality'] ?>
@@ -94,10 +94,10 @@ foreach ($driverList as $d) {
 		<br>
 		Drivers: <?= implode(", ", $teamDrivers[$id] ?? []) ?>
 		</li>
-		<br>
 	<?php } ?>
 
 	</ul>
 	<a href="logout.php">Log out</a>
+</main>
 </body>
 </html>
