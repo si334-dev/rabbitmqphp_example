@@ -46,13 +46,14 @@ $need = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Home</title></head>
+<head><title>Home</title><?php include 'header.php' ?></head>
 <body>
 <?php include ('nav.php'); ?>
+<main class="container">
 	<h1> Standings 2026 </h1>
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach ($need as $standing){ ?>
-		<li>
+		<li class="list-group-item">
 		<?= $standing['positionText'] ?>
 		<a href="driver.php?id=<?= urlencode($standing['Driver']['driverId']) ?>"><?= htmlspecialchars($standing['Driver']['givenName'] . " "  . $standing['Driver']['familyName']) ?></a>
 		<strong> Constructor: </strong>
@@ -63,5 +64,6 @@ $need = $data['MRData']['StandingsTable']['StandingsLists'][0]['DriverStandings'
 
 	</ul>
 	<a href="logout.php">Log out</a>
+</main>
 </body>
 </html>
