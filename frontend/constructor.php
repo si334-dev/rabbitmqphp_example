@@ -54,9 +54,10 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Constructor</title></head>
+<head><title>Constructor</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include('nav.php'); ?>
+	<main class="container">
 
 	<?php if (!$team): ?>
 		<h2>Constructor not found</h2>
@@ -77,9 +78,9 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 
 		<h3>Drivers</h3>
 		<?php if ($teamDrivers): ?>
-			<ul>
+			<ul class="list-group mb-3">
 			<?php foreach ($teamDrivers as $d): ?>
-				<li><a href="driver.php?id=<?php echo urlencode($d['driverId']); ?>"><?php echo htmlspecialchars($d['givenName'] . ' ' . $d['familyName']); ?></a></li>
+				<li class="list-group-item"><a href="driver.php?id=<?php echo urlencode($d['driverId']); ?>"><?php echo htmlspecialchars($d['givenName'] . ' ' . $d['familyName']); ?></a></li>
 			<?php endforeach; ?>
 			</ul>
 		<?php else: ?>
@@ -89,9 +90,9 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 		<h3>Last Race</h3>
 		<?php if ($lastRace): ?>
 			<p><?php echo htmlspecialchars($lastRace['raceName']); ?> (Round <?php echo htmlspecialchars($lastRace['round']); ?>)</p>
-			<ul>
+			<ul class="list-group mb-3">
 			<?php foreach ($lastRace['Results'] ?? [] as $r): ?>
-				<li><?php echo htmlspecialchars($r['Driver']['familyName']); ?>: P<?php echo htmlspecialchars($r['positionText']); ?> (<?php echo htmlspecialchars($r['points']); ?> pts)</li>
+				<li class="list-group-item"><?php echo htmlspecialchars($r['Driver']['familyName']); ?>: P<?php echo htmlspecialchars($r['positionText']); ?> (<?php echo htmlspecialchars($r['points']); ?> pts)</li>
 			<?php endforeach; ?>
 			</ul>
 		<?php else: ?>
@@ -99,5 +100,6 @@ if (preg_match('/^[a-z0-9_]+/i', $id)) {
 		<?php endif; ?>
 
 	<?php endif; ?>
+</main>
 </body>
 </html>
