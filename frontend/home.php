@@ -24,10 +24,10 @@ if ($nextRace) {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Home</title></head>
+<head><title>Home</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include ('nav.php'); ?>
-
+	<main class="container">
 	<h2>Welcome!</h2>
 
 	<h3>Next Race!</h3>
@@ -40,9 +40,10 @@ if ($nextRace) {
 	<?php endif; ?>
 <!--	<h3>My Leagues</h3>
 	<p>Coming soon.</p> -->
-	<a href="createLeague.php">Create A League</a>
+	<a class="btn btn-primary btn-sm" href="createLeague.php">Create A League</a>
 
 	<!-- <h3>Last Race Final Results</h3>
 	<p>Coming soon. </p> -->
+</main>
 </body>
 </html>

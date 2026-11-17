@@ -45,6 +45,10 @@ td, th{
 		padding-top: 0.5rem;
 		padding-bottom: 1rem;
 	}
+	
+	p{
+		overflow-wrap: anywhere;
+	}
 }
 
 

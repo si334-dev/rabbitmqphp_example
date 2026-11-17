@@ -8,9 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 	exit();
 }
 
-if (!isset($_COOKIE['session_key'])){ header('Location: login.php'); exit();}
-
-include ('nav.php'); //idk if this should go here 
+if (!isset($_COOKIE['session_key'])){ header('Location: login.php'); exit();} 
 
 $request = [
 	'type' => 'getLeagueInfo',
@@ -42,19 +40,21 @@ if (($response['returnCode'] ?? '0') == '1') {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>League Page</title></head>
+<head><title>League Page</title><?php include 'header.php';?></head>
 <body>
+<?php include ('nav.php'); ?>
+<main class="container">
 	<h1> League Page </h1>
 
 	
 	<?php foreach ($leagueLeaderboard as $user): ?>
 	<?php if ($user['username'] === $username): ?>
-	<a href="eval.php?id=<?= $lid ?>">View Weekly Evaluation</a>
+	<a class="btn btn-primary btn-sm" href="eval.php?id=<?= $lid ?>">View Weekly Evaluation</a>
 	<p> </p>
 	
 		<?php endif; ?>
 	<?php endforeach; ?>
-	<a href="team_management.php?league_id=<?php echo urlencode($lid); ?>">Manage Team</a>
+	<a class="btn btn-primary btn-sm" href="team_management.php?league_id=<?php echo urlencode($lid); ?>">Manage Team</a>
 	<br>
 	<?php
 	$name = $leagueInfo['name'];
@@ -81,6 +81,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 ?>
 	<p> </p>
 	<a href="logout.php">Log out</a>
+</main>
 </body>
 </html>
 
