@@ -164,7 +164,7 @@ $left = $draftPower - $spent;
 
         <h4>Drivers</h4>
 	<div class="table-responsive mb-4">
-	<table class="tbale table-stripped table-sm align-middle mb-0"> 
+	<table class="table table-stripped table-sm align-middle mb-0"> 
                 <tr><th>Driver</th><th>Draft Power Cost</th> </tr>
 		<?php foreach($drivers as $d) { ?>
 			<?php $id = $d['api_driver_id']; ?>
