@@ -135,10 +135,12 @@ $lastRace = lastRaceInfo();
 
 <head>
 	<title> Statistics </title>
+	<?php include 'header.php'; ?>
 </head>
 
 <body>
 	<?php include ('nav.php'); ?>
+	<main class="container">
 
 	<h2> Last Race: <!-- Race Name here --><?php echo $lastRace['name']; ?> </h2>
 	
@@ -147,9 +149,9 @@ $lastRace = lastRaceInfo();
 		1 - Hamilton
 		2 - Leclerc
 		3 - Verstappen-->
-	<ol>
+	<ol class="list-group list-group-numbered mb-3">
 	<?php foreach($lastRace['podium'] as $line){ ?>
-		<li> <?php echo htmlspecialchars($line); ?> </li>
+		<li class="list-group-item"> <?php echo htmlspecialchars($line); ?> </li>
 	<?php } ?>
 	</ol>
 
@@ -168,39 +170,39 @@ $lastRace = lastRaceInfo();
 		Piastri - 10
 		Albon - 7
 		Perez - 5-->
-	<ul><?php foreach($podiumNums as $driver => $count){ ?>
-	  	<li> <?php echo htmlspecialchars($driver) . '- ' . $count; ?> </li>		
+	<ul class="list-group mb-3"><?php foreach($podiumNums as $driver => $count){ ?>
+	  	<li class="list-group-item"> <?php echo htmlspecialchars($driver) . '- ' . $count; ?> </li>		
 	<?php } ?>
 	</ul>
 
 
 	<h5> Top 10 Finishes </h5>
 	<!-- how many times a driver has finished in the top 10, same format podiums -->
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach($top10Nums as $driver => $count){ ?>
-		<li> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?>
+		<li class="list-group-item"> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?>
 	<?php } ?>
 	</ul>
 
-	<h5> DNFs </h5>
+	<!---<h5> DNFs </h5>-->
 	<!-- how many times a driver has dnfd --->
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach($dnfsTotal as $driver => $count){ ?>
-		<li> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?> </li>
+		<li class="list-group-item"> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?> </li>
 	<?php } ?>
 	</ul>
 
 	<h5> Fastest Laps </h5>
 	<!-- how many times a driver has achieved the fastest lap in a race -->
-	<ul>
+	<ul class="list-group mb-3">
 	<?php foreach($fastestNums as $driver => $count){ ?>
-		<li> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?> </li>
+		<li class="list-group-item"> <?php echo htmlspecialchars($driver) . ' - ' . $count; ?> </li>
 		<?php } ?>
 		</ul>
 	
 	<h5> Sprint Races Podiums </h5>
-	<!-- i don't think we need this, if i don't see them; they don't exists. ask about how it will work on evaluation, if needed add; if not remove->
+	<!-- i don't think we need this, if i don't see them; they don't exists. ask about how it will work on evaluation, if needed add; if not remove-->
 
+</main>
 </body>
-
 </html>
