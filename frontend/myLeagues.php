@@ -34,12 +34,13 @@ try {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>My Leagues</title>
+	<?php include 'header.php'; ?>
 </head>
-<body>
 
+<body>
 <?php include('nav.php'); ?>
+<main class="container">
 
 <h1>My Leagues</h1>
 
@@ -58,7 +59,8 @@ try {
 
     <?php foreach ($leagues as $league): ?>
 
-        <section>
+        <section class="card mb-3">
+	<div class="card-body">
             <h2><?php echo htmlspecialchars($league['name']); ?></h2>
 
             <p><?php echo htmlspecialchars($league['description'] ?? ''); ?></p>
@@ -77,8 +79,9 @@ try {
 
             <a href="league.php?id=<?php echo urlencode($league['id']); ?>">View League</a>
             |
-            <a href="team_management.php?league_id=<?php echo urlencode($league['id']); ?>">Manage Team</a>
-        </section>
+            <a class="btn btn-outline-primary btn-sm" href="team_management.php?league_id=<?php echo urlencode($league['id']); ?>">Manage Team</a>
+        </div>
+	</section>
 
         <hr>
 
@@ -88,5 +91,7 @@ try {
 
 <p><a href="createLeague.php">Create a League</a></p>
 
+
+</main>
 </body>
 </html>

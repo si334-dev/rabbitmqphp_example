@@ -32,9 +32,10 @@ if (($response['returnCode'] ?? '0') == '1') {
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Profile</title></head>
+<head><title>Profile</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include ('nav.php'); ?>
+	<main class="container">
 	<h1> Your Profile </h1>
 	<?php 
 
@@ -42,6 +43,7 @@ if (($response['returnCode'] ?? '0') == '1') {
 	echo "<strong>Email:</strong>" . " " . " <p>$email </p>";
 	?>
 	<strong> Your Leagues: </strong>
+	<div class="list-group mb-3">
 	<?php foreach ($leagueList as $league){
 		$leagueName = $league['name'];
 		$leagueID = $league['id']; 
@@ -50,8 +52,10 @@ if (($response['returnCode'] ?? '0') == '1') {
 		echo "<a href=$url>$leagueName</a> " . " ";
 	}
 	?>
+	</div>
 	<p> </p>
 	<a href="logout.php">Log out</a>
+</main>
 </body>
 </html>
 
