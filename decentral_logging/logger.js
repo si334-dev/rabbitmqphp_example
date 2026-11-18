@@ -1,5 +1,6 @@
 const amqp = require('amqplib');
 const fs = require('fs');
+const os = require('os');
 
 const config = {
     host: '100.92.251.116',
@@ -15,7 +16,7 @@ async function startLogger() {
         const channel = await connection.createChannel();
 
         const exchangeName = 'logExchange';
-        const queueName = 'logQueue';
+        const queueName = os.hostname()+'_log_queue';
 
         await channel.assertExchange(exchangeName, 'fanout', { durable: true });
         await channel.assertQueue(queueName, { durable: true });
