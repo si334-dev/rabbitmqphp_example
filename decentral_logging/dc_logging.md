@@ -2,6 +2,8 @@
 
 #1 Install Dependencies 
 * Navigate to decentral_logging file in github repository
+* sudo apt update
+* sudo apt install nodejs npm -y
 * npm install amqplib
 * node logger.js
 * you should see "Waiting for logs.."
