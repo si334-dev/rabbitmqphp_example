@@ -99,17 +99,24 @@ $totalConstructorPoints = 0;
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Evaluation</title></head>
+<head><title>Evaluation</title><?php include 'header.php'; ?></head>
 <body>
 	<?php include ('nav.php'); ?>
-	<p><a href="league.php?id=<?= $league_id ?>">&larr; Back to League</a></p>
-	<h1> Your Team Evaluation </h1>
-	<?php 
+	<main class="container">
 
+	<p><a class="btn btn-primary btn-sm" href="league.php?id=<?= $league_id ?>">&larr; Back to League</a></p>
+	<h1> Your Team Evaluation </h1>
+	<div class="card mb-3">
+	<div class="card-body">
+	<?php 
 	echo "<strong>Team Name</strong>" . " " . " <p>$teamName </p>";
 	echo "<strong>Current Points:</strong>" . " " . " <p>$teamPoints </p>";
 	?>
-	<strong> Your Evaluation: </strong>
+	</div>
+	</div>
+
+	<h2> Your Evaluation: </h2>
+	<h3> Drivers </h3>
 	<?php foreach ($drivers as $driver){
 		$driverFamily = $driver['familyName'];
 		$driverGiven = $driver['givenName'];
@@ -126,6 +133,8 @@ $totalConstructorPoints = 0;
 		echo "<p>+$driverPoints Points</p>";
 	}
 	?>
+	
+	<h3> Constructors </h3>
 	<?php foreach ($constructors as $con){
 		$name = $con['name'];
 		$comPoints = $con['combinedDriverPoints'];
@@ -138,8 +147,9 @@ $totalConstructorPoints = 0;
 		$weekPoints = $totalDriverPoints + $totalConstructorPoints;
 		echo "<p>Your Drivers earned: $totalDriverPoints Your Constructors earned: $totalConstructorPoints Total: $weekPoints</p>";
 	?>
-	
-	<a href="logout.php">Log out</a>
+
+	<a class"btn btn-primary"  href="logout.php">Log out</a>
+</main>
 </body>
 </html>
 
