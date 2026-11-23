@@ -13,4 +13,4 @@
 
 #3 Logging file
 * Check your terminal that is running logger.js to see if message logged
-* in another window, cat decentralized log, to see all the messages logged 
+* in another window, cat decentralized.log, to see all the messages logged 
